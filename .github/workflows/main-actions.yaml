@@ -13,11 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '20'
-          cache: 'yarn'
+      - uses: ./.github/workflow-templates/setup.yml
       - run: yarn
       - run: yarn lint
 
