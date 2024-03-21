@@ -10,7 +10,7 @@ concurrency:
 jobs:
   lint:
     name: Run ESLint
-    uses: ./.github/workflows/setup.yml@main
+    uses: ./.github/workflows/setup.yml
     steps:
       - uses: actions/checkout@v3
       - run: yarn
