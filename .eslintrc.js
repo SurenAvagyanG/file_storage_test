@@ -1,5 +1,4 @@
 module.exports = {
-  root: true,
   plugins: ['prettier', 'jest'],
   rules: {
     'prettier/prettier': 'error',
@@ -24,8 +23,13 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
-  parserOptions: {
-    project: './tsconfig.json',
-  },
-  ignorePatterns: ['**/dist-helio-api', '**/dist-shopify-api', '**/dist'],
+  ignorePatterns: ['/dist'],
+  overrides: [
+    {
+      files: ['*.ts'],
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+    },
+  ],
 };
