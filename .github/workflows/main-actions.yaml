@@ -1,0 +1,65 @@
+name: Main Actions
+
+on:
+  - push
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Run ESLint
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'yarn'
+      - run: yarn
+      - run: yarn lint
+
+  prettier:
+    name: Run Prettier Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'yarn'
+      - run: yarn
+      - run: yarn prettier
+
+  build:
+    name: Run build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'yarn'
+      - run: yarn
+      - run: yarn build
+
+  test:
+    name: Run Test
+    timeout-minutes: 30
+    runs-on:
+      group: backend
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'yarn'
+      - run: echo "APP_ENVIRONMENT=local" > .env
+      - run: yarn
+      - run: yarn build
+      - run: yarn test
