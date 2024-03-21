@@ -1,4 +1,4 @@
-name: Reusable workflow example
+name: setup
 
 on:
   workflow_call:
