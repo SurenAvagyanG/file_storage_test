@@ -10,11 +10,9 @@ concurrency:
 jobs:
   lint:
     name: Run ESLint
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
+    uses: ./.github/workflows/setup.yml@main
     steps:
       - uses: actions/checkout@v3
-      - uses: Experianto/file_storage/.github/workflows/setup.yml@main
       - run: yarn
       - run: yarn lint
 
