@@ -10,7 +10,7 @@ import { isProdMode } from '../../shared';
 const EXCEPTION_MESSAGE = 'Sorry, something went wrong';
 @Catch()
 export class ExceptionHandler implements ExceptionFilter {
-  catch(exception: Error, host: ArgumentsHost) {
+  catch(exception: Error, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse();
 

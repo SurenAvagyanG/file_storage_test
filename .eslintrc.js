@@ -1,25 +1,35 @@
 module.exports = {
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    project: 'tsconfig.json',
-    tsconfigRootDir: __dirname,
-    sourceType: 'module',
+  plugins: ['prettier', 'jest'],
+  rules: {
+    'prettier/prettier': 'error',
+    '@typescript-eslint/interface-name-prefix': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': ['warn'],
+    '@typescript-eslint/explicit-function-return-type': ['warn'],
+    '@typescript-eslint/no-explicit-any': ['warn'],
+    '@typescript-eslint/naming-convention': ['off'],
+    '@typescript-eslint/no-duplicate-enum-values': 'off',
+    'no-await-in-loop': 'off',
+    'import/export': 'off',
+    'no-underscore-dangle': 'off',
+    'new-cap': 'off',
+    'no-restricted-syntax': 'off',
+    'no-continue': 'off',
+    'no-plusplus': 'off',
+    'no-param-reassign': [2, { props: false }],
+    'no-useless-constructor': 'off',
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
   extends: [
+    'prettier',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
   ],
-  root: true,
-  env: {
-    node: true,
-    jest: true,
-  },
-  ignorePatterns: ['.eslintrc.js'],
-  rules: {
-    '@typescript-eslint/interface-name-prefix': 'off',
-    '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/explicit-module-boundary-types': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-  },
+  ignorePatterns: ['/dist'],
+  overrides: [
+    {
+      files: ['*.ts'],
+      parserOptions: {
+        project: './tsconfig.json',
+      },
+    },
+  ],
 };
