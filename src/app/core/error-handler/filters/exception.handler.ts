@@ -5,7 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-import { isProdMode } from '../../shared';
+import { isProdMode } from '@shared/utils';
 
 const EXCEPTION_MESSAGE = 'Sorry, something went wrong';
 @Catch()

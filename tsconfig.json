@@ -9,7 +9,7 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -17,7 +17,15 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
-    "composite": true
+    "composite": true,
+    "paths": {
+      "@config/*": ["./config/*"],
+      "@infrastructure/*": ["./infrastructure/*"],
+      "@domain/*": ["./domain/*"],
+      "@core/*": ["./app/core/*"],
+      "@feature/*": ["./app/feature/*"],
+      "@shared/*": ["./app/shared/*"],
+    }
   },
   "rules": {
     "no-restricted-syntax": "off"
