@@ -4,7 +4,7 @@ import { ConfigService } from '@nestjs/config';
 export const HEALTH_MESSAGE = 'OK';
 
 @Injectable()
-export class AppService {
+export class MainService {
   private readonly version: string;
 
   constructor(configService: ConfigService) {
