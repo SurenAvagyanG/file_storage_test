@@ -7,6 +7,9 @@ import { dbConfig } from '@config/db.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AttachmentModule } from '@feature/attachment/attachment.module';
 import { fileSystemConfig } from '@config/file-system.config';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { GraphQLModule } from '@nestjs/graphql';
+import { isProdMode } from '@shared/utils';
 
 @Module({
   imports: [
@@ -19,11 +22,11 @@ import { fileSystemConfig } from '@config/file-system.config';
         config.getOrThrow(`db.${config.getOrThrow('db.driver')}`),
       inject: [ConfigService],
     }),
-    // GraphQLModule.forRoot<ApolloDriverConfig>({
-    //   driver: ApolloDriver,
-    //   playground: !isProdMode(),
-    //   autoSchemaFile: 'schema.gql',
-    // }),
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      playground: !isProdMode(),
+      autoSchemaFile: 'schema.gql',
+    }),
     ErrorHandlerModule,
     AttachmentModule,
     MainModule,

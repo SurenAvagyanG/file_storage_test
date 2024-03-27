@@ -11,10 +11,11 @@ import {
 import { FileEntity } from '@feature/file/entities/file.entity';
 import { AttachmentType } from '@domain/constants';
 
-@ObjectType()
 @Entity()
+@ObjectType()
 export class AttachmentEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
+  @Field()
   id: string;
 
   @Column({ type: 'varchar' })
@@ -22,7 +23,6 @@ export class AttachmentEntity extends BaseEntity {
   name: string;
 
   @Column({ type: 'varchar' })
-  @Field()
   type: AttachmentType;
 
   @Column({ type: 'varchar' })
@@ -30,15 +30,12 @@ export class AttachmentEntity extends BaseEntity {
   extension: string;
 
   @Column({ type: 'varchar' })
-  @Field()
   creator_id: string;
 
   @Column({ type: 'varchar' })
-  @Field()
   creator_type: string;
 
   @Column({ type: 'varchar' })
-  @Field()
   description: string;
 
   @OneToMany(() => FileEntity, (file) => file.attachment, {
