@@ -6,8 +6,15 @@ phases:
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418328607.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
+      - COMMIT_HASH=$(git rev-parse --short HEAD) # Get the commit hash
+      - TIMESTAMP=$(date +%Y%m%d%H%M%S) # Get current timestamp
+      - IMAGE_TAG="${TIMESTAMP}-${COMMIT_HASH}" # Construct dynamic tag
       - docker build -t file_storage .
+      - docker tag file_storage:latest 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG # Tag with dynamic tag
       - docker tag file_storage:latest 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
   post_build:
     commands:
+      - docker push 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG
       - docker push 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
+      - kubectl set image deployment/file-storage file-storage=905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
+      - kubectl set image deployment/file-storage file-storage=905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG
