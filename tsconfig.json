@@ -24,10 +24,10 @@
       "@domain/*": ["./domain/*"],
       "@core/*": ["./app/core/*"],
       "@feature/*": ["./app/feature/*"],
-      "@shared/*": ["./app/shared/*"],
+      "@shared/*": ["./app/shared/*"]
     }
   },
   "rules": {
     "no-restricted-syntax": "off"
-  },
+  }
 }

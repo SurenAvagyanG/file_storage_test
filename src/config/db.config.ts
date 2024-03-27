@@ -11,6 +11,7 @@ export const dbConfig = registerAs('db', () => ({
     database: process.env.DB_DATABASE ?? 'file_storage',
     logging: Boolean(process.env.DB_LOGGING),
     synchronize: true,
+    autoLoadEntities: true,
     entities: [],
   },
 }));
