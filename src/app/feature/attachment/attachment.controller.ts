@@ -1,4 +1,4 @@
-`import { AttachmentService } from '@feature/attachment/attachment.service';
+import { AttachmentService } from '@feature/attachment/attachment.service';
 import {
   Body,
   Controller,
