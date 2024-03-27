@@ -3,7 +3,6 @@ import { QueryRunner } from 'typeorm/query-runner/QueryRunner';
 import { DBConnection } from '../db.connection';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
-import { UpdateResult } from 'typeorm/query-builder/result/UpdateResult';
 
 export abstract class BaseTypeOrmRepository<T extends ObjectLiteral>
   implements DBConnection<T>
