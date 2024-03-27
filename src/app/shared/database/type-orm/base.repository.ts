@@ -2,8 +2,12 @@ import { Repository, BaseEntity, FindOptionsWhere } from 'typeorm';
 import { QueryRunner } from 'typeorm/query-runner/QueryRunner';
 import { DBConnection } from '../db.connection';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
+import { UpdateResult } from 'typeorm/query-builder/result/UpdateResult';
 
-export abstract class BaseTypeOrmRepository<T> implements DBConnection<T> {
+export abstract class BaseTypeOrmRepository<T extends ObjectLiteral>
+  implements DBConnection<T>
+{
   protected abstract entityClass: typeof BaseEntity;
 
   protected constructor(protected repository: Repository<T>) {}
@@ -35,7 +39,7 @@ export abstract class BaseTypeOrmRepository<T> implements DBConnection<T> {
     return this.repository.find();
   }
 
-  findBy(field: keyof T, value: unknown): Promise<T> {
+  findBy(field: keyof T, value: unknown): Promise<T | null> {
     return this.repository.findOne({
       where: {
         [field]: value,
@@ -43,10 +47,12 @@ export abstract class BaseTypeOrmRepository<T> implements DBConnection<T> {
     });
   }
 
-  update(id: string, payload: T): Promise<T> {
-    return this.repository.update(
+  async update(id: string, payload: T): Promise<boolean> {
+    const result = await this.repository.update(
       id,
       payload as QueryDeepPartialEntity<T>,
-    ) as Promise<T>;
+    );
+
+    return Boolean(result.affected);
   }
 }

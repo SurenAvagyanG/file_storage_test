@@ -34,7 +34,7 @@ export class StorageService {
     return this.storage.getDownloadUrl(key, params);
   }
 
-  getFileMeta(key: string, params?: UrlParams): Promise<FileMeta> {
+  getFileMeta(key: string, params?: UrlParams): Promise<FileMeta | null> {
     return this.storage.getFileMeta(key, params);
   }
 }

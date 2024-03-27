@@ -8,7 +8,7 @@ import {
   IDBTransactionRunner,
   IDBTransactionService,
 } from '@shared/database';
-import { UploadProcessConnection } from '@feature/upload-process/upload-process.module';
+import { UploadProcessConnection } from '@feature/upload-process/constants/tokens.const';
 
 @Injectable()
 export class UploadProcessService {
@@ -38,10 +38,10 @@ export class UploadProcessService {
     return uploadProcess;
   }
 
-  async findBySignedUrl(signedUrl: string): Promise<UploadProcessEntity> {
-    const results = await this.repository.findBy('signedUrl', signedUrl);
-    console.log(results, signedUrl);
-    return results[0];
+  async findBySignedUrl(
+    signedUrl: string,
+  ): Promise<UploadProcessEntity | null> {
+    return this.repository.findBy('signedUrl', signedUrl);
   }
 
   async remove(id: string, transaction?: IDBTransactionRunner): Promise<void> {

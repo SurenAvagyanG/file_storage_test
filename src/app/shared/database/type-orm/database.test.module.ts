@@ -12,7 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
     }),
     TypeOrmModule.forRootAsync({
       useFactory: (config: ConfigService) =>
-        config.get(`db.${config.get('db.driver')}`),
+        config.getOrThrow(`db.${config.getOrThrow('db.driver')}`),
       inject: [ConfigService],
     }),
   ],

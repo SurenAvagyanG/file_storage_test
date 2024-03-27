@@ -15,7 +15,7 @@ import { StorageService } from './storage.service';
     {
       provide: StorageService,
       useFactory: (configService: ConfigService): StorageService =>
-        new StorageService(configService.get('fileSystem.driver')),
+        new StorageService(configService.getOrThrow('fileSystem.driver')),
       inject: [ConfigService],
     },
   ],

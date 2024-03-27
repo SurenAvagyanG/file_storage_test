@@ -5,8 +5,7 @@ import { DatabaseModule } from '@shared/database';
 import { UploadProcessEntity } from '@feature/upload-process/entities/upload-process.entity';
 import { UploadProcessRepository } from '@feature/upload-process/entities/upload-process.repository';
 import { StorageModule } from '@shared/storage';
-
-export const UploadProcessConnection = 'UploadProcessConnection';
+import { UploadProcessConnection } from '@feature/upload-process/constants/tokens.const';
 
 @Module({
   imports: [DatabaseModule.forFeature([UploadProcessEntity]), StorageModule],

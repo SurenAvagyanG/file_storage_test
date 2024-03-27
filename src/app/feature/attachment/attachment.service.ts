@@ -12,9 +12,13 @@ import { FileService } from '@feature/file/file.service';
 import { FileType } from '@domain/constants';
 import { AttachmentModel } from '@domain/models/attachment.model';
 import { FileEntity } from '@feature/file/entities/file.entity';
-import { FileManager } from '@feature/attachment/file.manager';
 import { UpdateAttachmentDto } from '@feature/attachment/dto/update-attachment.dto';
-import { AttachmentConnection } from '@feature/attachment/attachment.module';
+import { AttachmentConnection } from '@feature/attachment/constants/tokens.const';
+import {
+  getAttachmentType,
+  getFileExtension,
+  getFileName,
+} from '@shared/utils';
 
 @Injectable()
 export class AttachmentService {
@@ -25,7 +29,6 @@ export class AttachmentService {
     private storageService: StorageService,
     private uploadProcessService: UploadProcessService,
     private fileService: FileService,
-    private fileManager: FileManager,
   ) {}
   async create(dto: CreateAttachmentDto): Promise<AttachmentModel> {
     const uploadProcess = await this.uploadProcessService.findBySignedUrl(
@@ -43,12 +46,11 @@ export class AttachmentService {
     }
 
     const transaction = await this.transaction.startTransaction();
-
     const attachment = await this.repository.createWithTransaction(
       {
-        name: this.fileManager.getFileName(dto.name),
-        type: this.fileManager.getAttachmentType(dto.name),
-        extension: this.fileManager.getFileExtension(dto.name),
+        name: getFileName(dto.name),
+        type: getAttachmentType(dto.name),
+        extension: getFileExtension(dto.name),
         creator_id: 'test_user_id',
         creator_type: 'test_user_type',
         description: dto.description,

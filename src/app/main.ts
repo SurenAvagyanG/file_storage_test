@@ -10,14 +10,17 @@ async function bootstrap(): Promise<void> {
 
   StorageFactory.addStorageDriver(
     's3',
-    new S3Adapter(configService.get('fileSystem.s3')),
+    new S3Adapter(configService.getOrThrow('fileSystem.s3')),
   );
 
   await app
-    .listen(configService.get('app.port'), configService.get('app.host'))
+    .listen(
+      configService.getOrThrow('app.port'),
+      configService.getOrThrow('app.host'),
+    )
     .then(() => {
       console.log(
-        `Listening on port: ${configService.get('app.port')}, environment=${configService.get('app.environment')}`,
+        `Listening on port: ${configService.getOrThrow('app.port')}, environment=${configService.getOrThrow('app.environment')}`,
       );
     });
 }

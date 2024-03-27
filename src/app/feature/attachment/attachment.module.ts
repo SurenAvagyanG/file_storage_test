@@ -8,9 +8,8 @@ import { DatabaseModule } from '@shared/database';
 import { StorageModule } from '@shared/storage';
 import { UploadProcessModule } from '@feature/upload-process/upload-process.module';
 import { FileModule } from '@feature/file/file.module';
-import { FileManager } from '@feature/attachment/file.manager';
+import { AttachmentConnection } from '@feature/attachment/constants/tokens.const';
 
-export const AttachmentConnection = 'AttachmentConnection';
 @Module({
   imports: [
     DatabaseModule.forFeature([AttachmentEntity]),
@@ -21,7 +20,6 @@ export const AttachmentConnection = 'AttachmentConnection';
   providers: [
     AttachmentResolver,
     AttachmentService,
-    FileManager,
     {
       provide: AttachmentConnection,
       useClass: AttachmentRepository,

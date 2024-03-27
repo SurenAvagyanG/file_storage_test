@@ -11,7 +11,7 @@ export interface DBConnection<T> {
     queryRunner?: IDBTransactionRunner,
   ): Promise<boolean>;
 
-  findBy(field: keyof T, value: unknown): Promise<T>;
+  findBy(field: keyof T, value: unknown): Promise<T | null>;
 
-  update(id: string, payload: Partial<T>): Promise<T>;
+  update(id: string, payload: Partial<T>): Promise<boolean>;
 }

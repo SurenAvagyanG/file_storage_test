@@ -4,7 +4,7 @@ export interface IStorage {
   delete(key: string): Promise<void>;
   getUploadUrl(key: string, params?: UrlParams): Promise<UploadUrlResponse>;
   getDownloadUrl(key: string, params?: UrlParams): Promise<string>;
-  getFileMeta(key: string, params?: UrlParams): Promise<FileMeta>;
+  getFileMeta(key: string, params?: UrlParams): Promise<FileMeta | null>;
 }
 
 export interface FileUploadResponse {

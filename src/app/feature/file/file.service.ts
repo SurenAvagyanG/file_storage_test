@@ -2,8 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateFileDto } from './dto/create-file.dto';
 import { StorageService } from '@shared/storage';
 import { FileEntity } from '@feature/file/entities/file.entity';
-import { FileConnection } from '@feature/file/file.module';
 import { DBConnection, IDBTransactionRunner } from '@shared/database';
+import { FileConnection } from '@feature/file/constants/tokens.const';
 
 @Injectable()
 export class FileService {

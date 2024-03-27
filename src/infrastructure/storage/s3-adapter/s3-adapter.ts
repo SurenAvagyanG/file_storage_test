@@ -9,6 +9,7 @@ import {
 import { S3Credentials } from './s3-credentials';
 import { generateRandomStr } from '@infrastructure/utils';
 import { Logger } from '@nestjs/common';
+import { getFileExtension } from '@shared/utils';
 
 const filenameCharacterCount = 40;
 
@@ -84,7 +85,7 @@ export class S3Adapter implements IStorage {
     return url;
   }
 
-  async getFileMeta(key: string, params?: UrlParams): Promise<FileMeta> {
+  async getFileMeta(key: string, params?: UrlParams): Promise<FileMeta | null> {
     const payload = {
       Key: key,
       Bucket: this.credentials.bucket,
@@ -93,7 +94,7 @@ export class S3Adapter implements IStorage {
     try {
       const result = await this.s3.headObject(payload).promise();
       return {
-        size: result.ContentLength,
+        size: Number(result.ContentLength),
       };
     } catch (e) {
       Logger.log(e);
@@ -123,13 +124,6 @@ export class S3Adapter implements IStorage {
   private generateFileName(fileName: string): string {
     return `${generateRandomStr(
       filenameCharacterCount,
-    )}.${this.getFileExtension(fileName)}`;
-  }
-
-  private getFileExtension(fileName: string): string {
-    const nameArray = fileName.split('.');
-
-    nameArray.shift();
-    return nameArray.pop();
+    )}.${getFileExtension(fileName)}`;
   }
 }
