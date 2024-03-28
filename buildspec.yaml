@@ -20,7 +20,7 @@ phases:
 #      - docker tag file_storage:latest 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
   post_build:
     commands:
-      #- aws eks update-kubeconfig --name development-cluster --region us-east-1
+      - aws eks update-kubeconfig --name development-cluster --region us-east-1
       - kubectl config get-contexts
       #- kubectl get configmap aws-auth -o yaml -n kube-system
       - kubectl set image deployment/file-storage file-storage=905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
