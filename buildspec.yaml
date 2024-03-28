@@ -22,8 +22,8 @@ phases:
     commands:
       - kubectl get configmap aws-auth -o yaml -n kube-system
       #- export ACCOUNT_ID=905418328607
-      - ROLE="    - rolearn: arn:aws:iam::$ACCOUNT_ID:role/CodeBuildEKSRole\n      username: build\n      groups:\n        - system:masters"
-      - kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/auth-patch.yml
+      #- ROLE="    - rolearn: arn:aws:iam::$ACCOUNT_ID:role/CodeBuildEKSRole\n      username: build\n      groups:\n        - system:masters"
+      #- kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/auth-patch.yml
       - kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/auth-patch.yml)"
       #- aws eks update-kubeconfig --name development-cluster --region us-east-1
       #- kubectl config get-contexts
