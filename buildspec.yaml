@@ -3,12 +3,12 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo Installing app dependencies...
-      - curl -LO https://dl.k8s.io/release/v1.27.2/bin/linux/amd64/kubectl
-      - chmod +x ./kubectl
-      - mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-      - echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-      - source ~/.bashrc
+      #- echo Installing app dependencies...
+      #- curl -LO https://dl.k8s.io/release/v1.27.2/bin/linux/amd64/kubectl
+      #- chmod +x ./kubectl
+      #- mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
+      #- echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
+      #- source ~/.bashrc
       - echo 'Check kubectl version'
       - kubectl version --short --client
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418328607.dkr.ecr.us-east-1.amazonaws.com
@@ -20,7 +20,7 @@ phases:
 #      - docker tag file_storage:latest 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
   post_build:
     commands:
-      - aws eks update-kubeconfig --name development-cluster --region us-east-1
+      #- aws eks update-kubeconfig --name development-cluster --region us-east-1
       - kubectl config get-contexts
       #- kubectl get configmap aws-auth -o yaml -n kube-system
       - kubectl set image deployment/file-storage file-storage=905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
