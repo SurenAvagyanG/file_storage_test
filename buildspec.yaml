@@ -15,5 +15,9 @@ phases:
       - docker push 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG
       - docker push 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
       - aws eks --region us-east-1 update-kubeconfig --name development-cluster
-      - kubectl set image deployment/file-storage file-storage=905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
+      - echo "printing $KUBECONFIG before"
+      - echo $KUBECONFIG
+      - export KUBECONFIG=$HOME/.kube/config
+      - echo "printing $KUBECONFIG after"
+      - echo $KUBECONFIG
       - kubectl set image deployment/file-storage file-storage=905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG
