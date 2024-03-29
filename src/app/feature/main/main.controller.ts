@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Logger } from '@nestjs/common';
 import { MainService } from './main.service';
 
 @Controller()
@@ -13,5 +13,11 @@ export class MainController {
   @Get('version')
   version(): string {
     return this.appService.getVersion();
+  }
+
+  @Get('test')
+  test(): string {
+    Logger.log('This is test logger');
+    return 'Test is Ok';
   }
 }
