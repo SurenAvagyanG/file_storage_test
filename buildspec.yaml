@@ -3,14 +3,6 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      #- echo Installing app dependencies...
-      #- curl -LO https://dl.k8s.io/release/v1.27.2/bin/linux/amd64/kubectl
-      #- chmod +x ./kubectl
-      #- mkdir -p $HOME/bin && cp ./kubectl $HOME/bin/kubectl && export PATH=$PATH:$HOME/bin
-      #- echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-      #- source ~/.bashrc
-      - echo 'Check kubectl version'
-      - kubectl version --short --client
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418328607.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
@@ -20,7 +12,6 @@ phases:
 #      - docker tag file_storage:latest 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
   post_build:
     commands:
-      - echo $KUBECONFIG
       - aws eks update-kubeconfig --name development-cluster --region us-east-1
       #- kubectl get configmap aws-auth -o yaml -n kube-system
       #- export ACCOUNT_ID=905418328607
@@ -28,8 +19,6 @@ phases:
       #- kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/auth-patch.yml
       #- kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/auth-patch.yml)"
       #- aws eks update-kubeconfig --name development-cluster --region us-east-1
-      - kubectl config get-contexts
-      - aws sts get-caller-identity
       #- kubectl get configmap aws-auth -o yaml -n kube-system
-      - kubectl get configmap -n kube-system aws-auth -o yaml
+      #- kubectl get configmap -n kube-system aws-auth -o yaml
       - kubectl set image deployment/file-storage file-storage=905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:98aa147
