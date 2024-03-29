@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
-export const HEALTH_MESSAGE = 'OK!!!';
+export const HEALTH_MESSAGE = 'OK!';
 
 @Injectable()
 export class MainService {
