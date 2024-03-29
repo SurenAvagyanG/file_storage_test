@@ -6,19 +6,14 @@ phases:
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 905418328607.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
-#      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-#      - docker build -t file_storage .
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - docker build -t file_storage .
+      - docker tag file_storage:latest \
+        905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG \
+        905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
 #      - docker tag file_storage:latest 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG # Tag with dynamic tag
 #      - docker tag file_storage:latest 905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
   post_build:
     commands:
       - aws eks update-kubeconfig --name development-cluster --region us-east-1
-      #- kubectl get configmap aws-auth -o yaml -n kube-system
-      #- export ACCOUNT_ID=905418328607
-      #- ROLE="    - rolearn: arn:aws:iam::$ACCOUNT_ID:role/CodeBuildEKSRole\n      username: build\n      groups:\n        - system:masters"
-      #- kubectl get -n kube-system configmap/aws-auth -o yaml | awk "/mapRoles: \|/{print;print \"$ROLE\";next}1" > /tmp/auth-patch.yml
-      #- kubectl patch configmap/aws-auth -n kube-system --patch "$(cat /tmp/auth-patch.yml)"
-      #- aws eks update-kubeconfig --name development-cluster --region us-east-1
-      #- kubectl get configmap aws-auth -o yaml -n kube-system
-      #- kubectl get configmap -n kube-system aws-auth -o yaml
-      - kubectl set image deployment/file-storage file-storage=905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:98aa147
+      - kubectl set image deployment/file-storage file-storage=905418328607.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG
