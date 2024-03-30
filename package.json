@@ -29,10 +29,13 @@
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/typeorm": "^10.0.2",
     "dd-trace": "^5.9.0",
+    "dotenv": "^16.4.5",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
-    "typeorm": "^0.3.20"
+    "typeorm": "^0.3.20",
+    "winston": "^3.13.0",
+    "winston-transport": "^4.7.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
