@@ -15,6 +15,8 @@ async function bootstrap(): Promise<void> {
 
   const configService: ConfigService = app.get(ConfigService);
 
+  app.setGlobalPrefix(configService.get('app.global_prefix'));
+
   await app
     .listen(configService.get('app.port'), configService.get('app.host'))
     .then(() => {
