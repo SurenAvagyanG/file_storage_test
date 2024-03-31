@@ -11,7 +11,7 @@ phases:
       - docker tag file_storage:latest $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG
       - docker tag file_storage:latest $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/file_storage:$IMAGE_TAG
-      - docker push $WS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/file_storage:latest
   post_build:
     commands:
       - aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
