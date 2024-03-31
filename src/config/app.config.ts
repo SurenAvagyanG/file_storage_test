@@ -5,5 +5,5 @@ export const appConfig = registerAs('app', () => ({
   host: process.env.APP_HOST ?? '0.0.0.0',
   version: process.env.APP_VERSION,
   environment: process.env.APP_ENVIRONMENT ?? 'LOCAL',
-  global_prefix: 'file_prefix',
+  global_prefix: 'file_storage',
 }));
