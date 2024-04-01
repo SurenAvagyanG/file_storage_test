@@ -16,13 +16,12 @@ async function bootstrap(): Promise<void> {
 
   const configService: ConfigService = app.get(ConfigService);
 
-  app.setGlobalPrefix(configService.get('app.global_prefix'));
-  
+  app.setGlobalPrefix(configService.getOrThrow('app.global_prefix'));
+
   StorageFactory.addStorageDriver(
     's3',
     new S3Adapter(configService.getOrThrow('fileSystem.s3')),
   );
-
 
   await app
     .listen(
@@ -32,6 +31,7 @@ async function bootstrap(): Promise<void> {
     .then(() => {
       Logger.log(
         `Listening on port: ${configService.get('app.port')}, environment=${configService.get('app.environment')}`,
+      );
     });
 }
 bootstrap();
