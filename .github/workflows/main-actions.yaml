@@ -38,6 +38,24 @@ jobs:
     name: Run Test
     timeout-minutes: 30
     runs-on: ubuntu-latest
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: file_storage
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,6 +63,13 @@ jobs:
           node-version: '20'
           cache: 'yarn'
       - run: echo "APP_ENVIRONMENT=local" > .env
+      - run: echo "DB_PASSWORD=postgres" > .env
+      - run: echo "DB_USERNAME=postgres" > .env
       - run: yarn
       - run: yarn build
       - run: yarn test
+        env:
+          APP_ENVIRONMENT: local
+          APP_VERSION: 0.0.0.1
+          DB_PASSWORD: postgres
+          DB_USERNAME: postgres
