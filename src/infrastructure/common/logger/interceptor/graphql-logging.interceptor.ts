@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { GqlExecutionContext } from '@nestjs/graphql';
+import { GraphQLError } from 'graphql/error';
 
 @Injectable()
 export class GraphqlLoggingInterceptor implements NestInterceptor {
@@ -47,8 +48,11 @@ export class GraphqlLoggingInterceptor implements NestInterceptor {
     // Implement your logic here to sanitize or select specific arguments for logging
     return args;
   }
-  // @TODO fix the type any
-  private logError(resolverName: string, fieldName: string, error: any) {
+  private logError(
+    resolverName: string,
+    fieldName: string,
+    error: GraphQLError & { response: unknown },
+  ): void {
     // Adjusted method to provide more information about the error
     const errorMessage = error.message;
     const errorCode = error.extensions?.code || 'UNDEFINED_CODE';

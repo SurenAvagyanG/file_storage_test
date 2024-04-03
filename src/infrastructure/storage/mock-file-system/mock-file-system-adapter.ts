@@ -12,10 +12,10 @@ export class MockFileSystemAdapter implements IStorage {
     return Promise.resolve(undefined);
   }
 
-  getUploadUrl(): Promise<UploadUrlResponse> {
+  getUploadUrl(extension: string): Promise<UploadUrlResponse> {
     return Promise.resolve({
-      signedUrl: '',
-      staticUrl: '',
+      signedUrl: `http//string.${extension}?signed=1`,
+      staticUrl: `http//string.${extension}`,
     });
   }
 

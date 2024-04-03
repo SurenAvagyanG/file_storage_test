@@ -3,16 +3,27 @@ import { AttachmentEntity } from './entities/attachment.entity';
 import { AttachmentService } from '@feature/attachment/attachment.service';
 import { CreateAttachmentInput } from '@feature/attachment/dto/create-attachment.input';
 import { UpdateAttachmentInput } from '@feature/attachment/dto/update-attachment.input';
+import { Inject } from '@nestjs/common';
+import {
+  DBTransactionService,
+  IDBTransactionService,
+} from '@infrastructure/common';
 
 @Resolver(() => AttachmentEntity)
 export class AttachmentResolver {
-  constructor(private readonly attachmentService: AttachmentService) {}
+  constructor(
+    private readonly attachmentService: AttachmentService,
+    @Inject(DBTransactionService)
+    private transactionService: IDBTransactionService,
+  ) {}
 
   @Mutation(() => AttachmentEntity)
-  createAttachment(
+  async createAttachment(
     @Args('createAttachmentInput') createAttachmentInput: CreateAttachmentInput,
   ): Promise<AttachmentEntity> {
-    return this.attachmentService.create(createAttachmentInput);
+    return this.transactionService.run(async (runner) => {
+      return await this.attachmentService.create(createAttachmentInput, runner);
+    });
   }
 
   @Query(() => AttachmentEntity)

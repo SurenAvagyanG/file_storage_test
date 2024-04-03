@@ -1,8 +1,8 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
-import { BaseTypeOrmRepository } from '@shared/database';
 import { FileEntity } from '@feature/file/entities/file.entity';
+import { BaseTypeOrmRepository } from '@infrastructure/common';
 
 @Injectable()
 export class FileRepository extends BaseTypeOrmRepository<FileEntity> {

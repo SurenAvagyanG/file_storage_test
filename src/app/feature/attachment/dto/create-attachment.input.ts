@@ -1,5 +1,11 @@
 import { InputType, Field } from '@nestjs/graphql';
-import { IsNotEmpty, IsString, IsUrl, Matches } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Matches,
+} from 'class-validator';
 import { ImageExtensions } from '@domain/constants';
 @InputType()
 export class CreateAttachmentInput {
@@ -21,5 +27,6 @@ export class CreateAttachmentInput {
 
   @Field()
   @IsString()
+  @IsOptional()
   description: string;
 }

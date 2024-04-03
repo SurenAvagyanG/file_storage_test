@@ -1,7 +1,7 @@
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
-import { BaseTypeOrmRepository } from '@shared/database';
+import { BaseTypeOrmRepository } from '@infrastructure/common';
 import { UploadLinkEntity } from '@feature/upload-link/entity/upload-link.entity';
 
 @Injectable()

@@ -6,6 +6,7 @@ import {
   UploadUrlResponse,
   UrlParams,
 } from '@infrastructure/storage';
+import { NotFoundException } from '@nestjs/common';
 
 export class StorageService {
   constructor(protected driver: string) {}
@@ -34,7 +35,13 @@ export class StorageService {
     return this.storage.getDownloadUrl(key, params);
   }
 
-  getFileMeta(key: string, params?: UrlParams): Promise<FileMeta | null> {
-    return this.storage.getFileMeta(key, params);
+  async getFileMeta(key: string, params?: UrlParams): Promise<FileMeta> {
+    const meta = await this.storage.getFileMeta(key, params);
+
+    if (!meta) {
+      throw new NotFoundException('File upload with signed url not finished');
+    }
+
+    return meta;
   }
 }

@@ -1,10 +1,6 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
-import {
-  DBConnection,
-  DBTransactionService,
-  IDBTransactionService,
-} from '@shared/database';
+import { DBConnection, IDBTransactionRunner } from '@infrastructure/common';
 import { StorageService } from '@shared/storage';
 import { UploadLinkService } from '@feature/upload-link/upload-link.service';
 import { FileService } from '@feature/file/file.service';
@@ -23,29 +19,20 @@ export class AttachmentService {
   constructor(
     @Inject(AttachmentConnection)
     private repository: DBConnection<AttachmentEntity>,
-    @Inject(DBTransactionService) private transaction: IDBTransactionService,
     private storageService: StorageService,
     private uploadLinkService: UploadLinkService,
     private fileService: FileService,
   ) {}
   async create(
     createAttachmentInput: CreateAttachmentInput,
+    runner: IDBTransactionRunner,
   ): Promise<AttachmentEntity> {
-    const uploadProcess = await this.uploadLinkService.findBySignedUrl(
-      createAttachmentInput.signedUrl,
-    );
-
-    if (!uploadProcess) {
-      throw new NotFoundException('Signed url is incorrect');
-    }
+    const uploadProcess = await this.uploadLinkService.findOrFailBy({
+      signedUrl: createAttachmentInput.signedUrl,
+    });
 
     const meta = await this.storageService.getFileMeta(uploadProcess.staticUrl);
 
-    if (!meta) {
-      throw new NotFoundException('File upload with signed url not finished');
-    }
-
-    const transaction = await this.transaction.startTransaction();
     const attachment = await this.repository.createWithTransaction(
       {
         name: getFileName(createAttachmentInput.name),
@@ -56,7 +43,7 @@ export class AttachmentService {
         creator_type: 'test_user_type',
         description: createAttachmentInput.description,
       },
-      transaction,
+      runner,
     );
 
     attachment.files = [
@@ -67,28 +54,24 @@ export class AttachmentService {
           size: meta.size,
           type: FileType.Default,
         },
-        transaction,
+        runner,
       ),
     ];
 
-    await this.uploadLinkService.remove(uploadProcess.id, transaction);
-    await transaction.commitTransaction();
+    await this.uploadLinkService.remove(uploadProcess.id, runner);
+
     return attachment;
   }
 
   async getById(id: string): Promise<AttachmentEntity> {
-    const attachment = await this.repository.findBy('id', id);
-    if (!attachment) {
-      throw new NotFoundException('Attachment Id is incorrect');
-    }
-    return attachment;
+    return await this.repository.findOrFailBy({ id });
   }
 
   async updateById(
     id: string,
     updateAttachmentInput: UpdateAttachmentInput,
   ): Promise<AttachmentEntity> {
-    await this.repository.update(id, updateAttachmentInput);
+    await this.repository.updateWithTransaction(id, updateAttachmentInput);
     return this.getById(id);
   }
 
