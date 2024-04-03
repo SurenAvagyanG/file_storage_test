@@ -1,1 +1,2 @@
-export * from './buffer.utils';
+export * from './buffer.util';
+export * from './string.util';

@@ -21,5 +21,13 @@ RUN yarn build
 # Expose the port your app runs on
 EXPOSE 3030
 
+# Environment Variables
+ENV DD_TRACE_DEBUG="false"
+ENV DD_TRACE_ENABLED="true"
+ENV DD_LOGS_INJECTION="true"
+ENV DD_PROFILING_ENABLED="true"
+ENV DD_APPSEC_ENABLED="true"
+ENV DD_IAST_ENABLED="true"
+
 # Command to run the application
 CMD ["yarn", "run", "start:prod"]

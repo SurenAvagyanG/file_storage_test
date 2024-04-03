@@ -8,7 +8,7 @@ export class MainService {
   private readonly version: string;
 
   constructor(configService: ConfigService) {
-    this.version = configService.get('app.version');
+    this.version = configService.getOrThrow('app.version');
   }
 
   getHealthMessage(): string {
