@@ -9,7 +9,6 @@ import { AttachmentModule } from '@feature/attachment/attachment.module';
 import { fileSystemConfig } from '@config/file-system.config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
-import { isProdMode } from '@shared/utils';
 import { UploadLinkModule } from '@feature/upload-link/upload-link.module';
 @Module({
   imports: [
@@ -24,8 +23,9 @@ import { UploadLinkModule } from '@feature/upload-link/upload-link.module';
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: !isProdMode(),
+      playground: false,
       autoSchemaFile: 'schema.gql',
+      path: 'file_storage',
     }),
     AttachmentModule,
     UploadLinkModule,
