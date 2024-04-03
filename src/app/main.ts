@@ -14,7 +14,7 @@ async function bootstrap(): Promise<void> {
 
   const configService: ConfigService = app.get(ConfigService);
 
-  app.setGlobalPrefix(configService.getOrThrow('app.global_prefix'));
+  app.setGlobalPrefix(configService.getOrThrow('app.service_name'));
   app.useGlobalPipes(new ValidationPipe());
   app.useLogger(app.get(LoggerService));
   StorageFactory.addStorageDriver(

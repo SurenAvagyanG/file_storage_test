@@ -22,10 +22,16 @@ import { UploadLinkModule } from '@feature/upload-link/upload-link.module';
         config.getOrThrow(`db.${config.getOrThrow('db.driver')}`),
       inject: [ConfigService],
     }),
-    GraphQLModule.forRoot<ApolloDriverConfig>({
+    GraphQLModule.forRootAsync<ApolloDriverConfig>({
       driver: ApolloDriver,
-      playground: !isProdMode(),
-      autoSchemaFile: 'schema.gql',
+      useFactory: (config: ConfigService) => {
+        return {
+          playground: !isProdMode(),
+          autoSchemaFile: 'schema.gql',
+          path: config.getOrThrow('app.service_name'),
+        };
+      },
+      inject: [ConfigService],
     }),
     AttachmentModule,
     UploadLinkModule,
