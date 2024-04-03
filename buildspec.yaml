@@ -7,8 +7,7 @@ phases:
   build:
     commands:
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
-      - export AWS_ACCOUNT_ID="$AWS_ACCOUNT_ID"
-      - docker build -t file_storage .
+      - docker build -t file_storage . --build-arg AWS_ACCOUNT_ID=$AWS_ACCOUNT_ID
       - docker tag file_storage:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG
       - docker tag file_storage:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:latest
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG
