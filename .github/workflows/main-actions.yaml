@@ -65,6 +65,7 @@ jobs:
       - run: echo "APP_ENVIRONMENT=local" > .env
       - run: echo "DB_PASSWORD=postgres" > .env
       - run: echo "DB_USERNAME=postgres" > .env
+      - run: echo "FS_DRIVER=S3" > .env
       - run: yarn
       - run: yarn build
       - run: yarn test
