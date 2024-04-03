@@ -1,5 +1,5 @@
 module.exports = {
-  plugins: ['prettier', 'jest'],
+  plugins: ['prettier', 'jest', 'import'],
   rules: {
     'prettier/prettier': 'error',
     '@typescript-eslint/interface-name-prefix': 'off',
@@ -9,7 +9,6 @@ module.exports = {
     '@typescript-eslint/naming-convention': ['off'],
     '@typescript-eslint/no-duplicate-enum-values': 'off',
     'no-await-in-loop': 'off',
-    'import/export': 'off',
     'no-underscore-dangle': 'off',
     'new-cap': 'off',
     'no-restricted-syntax': 'off',
@@ -17,6 +16,7 @@ module.exports = {
     'no-plusplus': 'off',
     'no-param-reassign': [2, { props: false }],
     'no-useless-constructor': 'off',
+    'import/no-cycle': 'error',
   },
   extends: [
     'prettier',

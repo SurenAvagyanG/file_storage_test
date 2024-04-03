@@ -12,7 +12,7 @@
     "baseUrl": "./src",
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": false,
+    "strictNullChecks": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
@@ -24,10 +24,10 @@
       "@domain/*": ["./domain/*"],
       "@core/*": ["./app/core/*"],
       "@feature/*": ["./app/feature/*"],
-      "@shared/*": ["./app/shared/*"],
+      "@shared/*": ["./app/shared/*"]
     }
   },
   "rules": {
     "no-restricted-syntax": "off"
-  },
+  }
 }

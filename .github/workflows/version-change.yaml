@@ -1,0 +1,40 @@
+name: Increment Package Version
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types:
+      - closed
+
+permissions:
+  contents: write
+jobs:
+  increment-version:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.PAT }}
+
+      - name: Set up Node.js and Yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Increment package version
+        run: yarn version --patch --no-git-tag-version
+
+      - name: Push changes
+        run: |
+          git config --global user.email "suren.avagyan@experianto.com"
+          git config --global user.name "SurenAvagyanXP"
+          git commit -am "Incremented package version"
+          git push
+        

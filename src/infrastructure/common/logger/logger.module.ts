@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
-import { LoggerMiddleware, StandardLoggerMiddleware } from './middleware';
 import { LoggerService, WinstonLoggerService } from './service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { GraphqlLoggingInterceptor } from './interceptor';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 @Module({
   imports: [ConfigModule],
   providers: [
@@ -17,10 +18,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     },
     {
-      provide: LoggerMiddleware,
-      useClass: StandardLoggerMiddleware,
+      provide: APP_INTERCEPTOR,
+      useClass: GraphqlLoggingInterceptor,
     },
   ],
-  exports: [LoggerService, LoggerMiddleware],
+  exports: [LoggerService],
 })
 export class LoggerModule {}
