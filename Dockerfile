@@ -1,8 +1,8 @@
 ## Use Node.js 20 Alpine as base image
 #FROM node:20-alpine
 # Use Node.js 20 Alpine as base image from AWS ECR
-ARG AWS_ACCOUNT_ID
-FROM $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/node:20-alpine
+ARG NODE_JS_IMAGE=node:20-alpine
+FROM NODE_JS_IMAGE
 
 # Set the working directory in the container
 WORKDIR /app
