@@ -1,9 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { LoggerMiddleware } from './Logger.middleware';
+import { LoggingMiddleware } from './logging.middleware';
 import { NextFunction, Request, Response } from 'express';
 
 @Injectable()
-export class StandardLoggerMiddleware extends LoggerMiddleware {
+export class HttpLoggingMiddleware extends LoggingMiddleware {
   protected readonly logger: Logger = new Logger(this.constructor.name);
   isErroneousStatusCode(statusCode: number): boolean {
     return statusCode >= 400 && statusCode < 600;
@@ -12,7 +12,6 @@ export class StandardLoggerMiddleware extends LoggerMiddleware {
   use(req: Request, res: Response, next: NextFunction): void {
     const { ip, method, originalUrl } = req;
     const userAgent = req.get('user-agent') || '';
-
     res.on('finish', () => {
       const { statusCode } = res;
       const contentLength = res.get('content-length');

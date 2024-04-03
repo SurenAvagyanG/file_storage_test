@@ -1,46 +1,44 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateUploadProcessDto } from './dto/create-upload-process.dto';
 import { StorageService } from '@shared/storage';
-import { UploadProcessEntity } from '@feature/upload-process/entities/upload-process.entity';
+import { UploadLinkEntity } from '@feature/upload-link/entity/upload-link.entity';
 import {
   DBConnection,
   DBTransactionService,
   IDBTransactionRunner,
   IDBTransactionService,
 } from '@shared/database';
-import { UploadProcessConnection } from '@feature/upload-process/constants/tokens.const';
+import { UploadLinkConnection } from '@feature/upload-link/constants/tokens.const';
+import { CreateUploadLinkInput } from '@feature/upload-link/dto/create-upload-link.input';
 
 @Injectable()
-export class UploadProcessService {
+export class UploadLinkService {
   constructor(
     private storageService: StorageService,
-    @Inject(UploadProcessConnection)
-    private repository: DBConnection<UploadProcessEntity>,
+    @Inject(UploadLinkConnection)
+    private repository: DBConnection<UploadLinkEntity>,
     @Inject(DBTransactionService) private transaction: IDBTransactionService,
   ) {}
 
   async create(
-    createUploadProcessDto: CreateUploadProcessDto,
-  ): Promise<UploadProcessEntity> {
+    createUploadLinkInput: CreateUploadLinkInput,
+  ): Promise<UploadLinkEntity> {
     const data = await this.storageService.getUploadUrl(
-      createUploadProcessDto.extension,
+      createUploadLinkInput.extension,
     );
 
     const transaction = await this.transaction.startTransaction();
 
-    const uploadProcess = await this.repository.createWithTransaction(
+    const uploadLink = await this.repository.createWithTransaction(
       data,
       transaction,
     );
 
     await transaction.commitTransaction();
 
-    return uploadProcess;
+    return uploadLink;
   }
-
-  async findBySignedUrl(
-    signedUrl: string,
-  ): Promise<UploadProcessEntity | null> {
+  //@TODO fix me
+  async findBySignedUrl(signedUrl: string): Promise<UploadLinkEntity | null> {
     return this.repository.findBy('signedUrl', signedUrl);
   }
 

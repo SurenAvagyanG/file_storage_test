@@ -42,6 +42,7 @@ export class AttachmentEntity extends BaseEntity {
     cascade: true,
     eager: true,
   })
+  @Field(() => [FileEntity], { nullable: true })
   files: FileEntity[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp' })

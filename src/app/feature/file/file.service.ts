@@ -17,21 +17,13 @@ export class FileService {
     data: CreateFileDto,
     transaction: IDBTransactionRunner,
   ): Promise<FileEntity> {
-    const fileEntity = await this.repository.createWithTransaction(
-      data,
-      transaction,
-    );
-
-    return await this.setPublicUrl(fileEntity);
+    return await this.repository.createWithTransaction(data, transaction);
   }
 
   async remove(id: string, transaction?: IDBTransactionRunner): Promise<void> {
     await this.repository.removeWithTransaction(id, transaction);
   }
-
-  async setPublicUrl(fileEntity: FileEntity): Promise<FileEntity> {
-    fileEntity.url = await this.storageService.getDownloadUrl(fileEntity.url);
-
-    return fileEntity;
+  async getPublicUrl(fileEntity: FileEntity): Promise<string> {
+    return await this.storageService.getDownloadUrl(fileEntity.url);
   }
 }

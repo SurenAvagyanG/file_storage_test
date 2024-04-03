@@ -1,2 +1,2 @@
-export * from './Logger.middleware';
-export * from './StandardLogger.middleware';
+export * from './logging.middleware';
+export * from './http-logging.middleware';

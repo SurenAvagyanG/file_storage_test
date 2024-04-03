@@ -5,16 +5,18 @@ import { StorageModule } from '@shared/storage';
 import { FileEntity } from '@feature/file/entities/file.entity';
 import { FileRepository } from '@feature/file/entities/file.repository';
 import { FileConnection } from '@feature/file/constants/tokens.const';
+import { FileResolver } from '@feature/file/file.resolver';
 
 @Module({
   imports: [DatabaseModule.forFeature([FileEntity]), StorageModule],
   providers: [
     FileService,
+    FileResolver,
     {
       provide: FileConnection,
       useClass: FileRepository,
     },
   ],
-  exports: [FileService],
+  exports: [FileService, FileResolver],
 })
 export class FileModule {}

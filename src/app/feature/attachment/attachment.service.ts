@@ -6,19 +6,17 @@ import {
   IDBTransactionService,
 } from '@shared/database';
 import { StorageService } from '@shared/storage';
-import { UploadProcessService } from '@feature/upload-process/upload-process.service';
-import { CreateAttachmentDto } from '@feature/attachment/dto/create-attachment.dto';
+import { UploadLinkService } from '@feature/upload-link/upload-link.service';
 import { FileService } from '@feature/file/file.service';
 import { FileType } from '@domain/constants';
-import { AttachmentModel } from '@domain/models/attachment.model';
-import { FileEntity } from '@feature/file/entities/file.entity';
-import { UpdateAttachmentDto } from '@feature/attachment/dto/update-attachment.dto';
 import { AttachmentConnection } from '@feature/attachment/constants/tokens.const';
 import {
   getAttachmentType,
   getFileExtension,
   getFileName,
 } from '@shared/utils';
+import { CreateAttachmentInput } from '@feature/attachment/dto/create-attachment.input';
+import { UpdateAttachmentInput } from '@feature/attachment/dto/update-attachment.input';
 
 @Injectable()
 export class AttachmentService {
@@ -27,12 +25,14 @@ export class AttachmentService {
     private repository: DBConnection<AttachmentEntity>,
     @Inject(DBTransactionService) private transaction: IDBTransactionService,
     private storageService: StorageService,
-    private uploadProcessService: UploadProcessService,
+    private uploadLinkService: UploadLinkService,
     private fileService: FileService,
   ) {}
-  async create(dto: CreateAttachmentDto): Promise<AttachmentModel> {
-    const uploadProcess = await this.uploadProcessService.findBySignedUrl(
-      dto.signedUrl,
+  async create(
+    createAttachmentInput: CreateAttachmentInput,
+  ): Promise<AttachmentEntity> {
+    const uploadProcess = await this.uploadLinkService.findBySignedUrl(
+      createAttachmentInput.signedUrl,
     );
 
     if (!uploadProcess) {
@@ -48,63 +48,51 @@ export class AttachmentService {
     const transaction = await this.transaction.startTransaction();
     const attachment = await this.repository.createWithTransaction(
       {
-        name: getFileName(dto.name),
-        type: getAttachmentType(dto.name),
-        extension: getFileExtension(dto.name),
+        name: getFileName(createAttachmentInput.name),
+        type: getAttachmentType(createAttachmentInput.name),
+        extension: getFileExtension(createAttachmentInput.name),
+        //@TODO fill correct information after auth service implementation
         creator_id: 'test_user_id',
         creator_type: 'test_user_type',
-        description: dto.description,
+        description: createAttachmentInput.description,
       },
       transaction,
     );
 
-    const file = await this.fileService.create(
-      {
-        url: uploadProcess.staticUrl,
-        attachment: attachment,
-        size: meta.size,
-        type: FileType.Default,
-      },
-      transaction,
-    );
+    attachment.files = [
+      await this.fileService.create(
+        {
+          url: uploadProcess.staticUrl,
+          attachment: attachment,
+          size: meta.size,
+          type: FileType.Default,
+        },
+        transaction,
+      ),
+    ];
 
-    await this.uploadProcessService.remove(uploadProcess.id, transaction);
-
+    await this.uploadLinkService.remove(uploadProcess.id, transaction);
     await transaction.commitTransaction();
-
-    return {
-      ...attachment,
-      url: (await this.fileService.setPublicUrl(file)).url,
-    };
+    return attachment;
   }
 
-  async getById(id: string): Promise<AttachmentModel> {
+  async getById(id: string): Promise<AttachmentEntity> {
     const attachment = await this.repository.findBy('id', id);
     if (!attachment) {
       throw new NotFoundException('Attachment Id is incorrect');
     }
-
-    return {
-      ...attachment,
-      url: (await this.getDefaultFile(attachment)).url,
-    };
+    return attachment;
   }
 
   async updateById(
     id: string,
-    dto: UpdateAttachmentDto,
-  ): Promise<AttachmentModel> {
-    await this.repository.update(id, dto);
+    updateAttachmentInput: UpdateAttachmentInput,
+  ): Promise<AttachmentEntity> {
+    await this.repository.update(id, updateAttachmentInput);
     return this.getById(id);
   }
 
   async removeById(id: string): Promise<boolean> {
     return await this.repository.removeWithTransaction(id);
-  }
-
-  private getDefaultFile(attachment: AttachmentEntity): Promise<FileEntity> {
-    return this.fileService.setPublicUrl(
-      attachment.files.filter((it) => it.type === FileType.Default)[0],
-    );
   }
 }

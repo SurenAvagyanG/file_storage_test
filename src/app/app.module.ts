@@ -1,17 +1,16 @@
-import { Inject, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MainModule } from '@feature/main/main.module';
-import { ErrorHandlerModule } from '@core/error-handler/error-handler.module';
 import { appConfig } from '@config/app.config';
 import { dbConfig } from '@config/db.config';
-import { LoggerModule, LoggerMiddleware } from '@infrastructure/common';
+import { LoggerModule } from '@infrastructure/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AttachmentModule } from '@feature/attachment/attachment.module';
 import { fileSystemConfig } from '@config/file-system.config';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { GraphQLModule } from '@nestjs/graphql';
 import { isProdMode } from '@shared/utils';
-
+import { UploadLinkModule } from '@feature/upload-link/upload-link.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,18 +27,10 @@ import { isProdMode } from '@shared/utils';
       playground: !isProdMode(),
       autoSchemaFile: 'schema.gql',
     }),
-    ErrorHandlerModule,
     AttachmentModule,
+    UploadLinkModule,
     MainModule,
     LoggerModule,
   ],
 })
-export class AppModule implements NestModule {
-  constructor(
-    @Inject(LoggerMiddleware)
-    private readonly loggerMiddleware: LoggerMiddleware,
-  ) {}
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(this.loggerMiddleware.constructor).forRoutes('*');
-  }
-}
+export class AppModule {}
