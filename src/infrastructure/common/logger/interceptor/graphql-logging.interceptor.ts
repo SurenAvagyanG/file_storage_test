@@ -3,16 +3,16 @@ import {
   ExecutionContext,
   Injectable,
   Logger,
+  NestInterceptor,
 } from '@nestjs/common';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { GqlExecutionContext } from '@nestjs/graphql';
-import { LoggingInterceptor } from './logging.interceptor';
 
 @Injectable()
-export class GraphqlLoggingInterceptor implements LoggingInterceptor {
+export class GraphqlLoggingInterceptor implements NestInterceptor {
   protected readonly logger: Logger = new Logger(this.constructor.name);
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const ctx = GqlExecutionContext.create(context);
     const resolverName = ctx.getClass().name;
     const info = ctx.getInfo();
@@ -43,17 +43,12 @@ export class GraphqlLoggingInterceptor implements LoggingInterceptor {
     );
   }
 
-  private extractVariables(args: any): any {
+  private extractVariables(args: unknown): unknown {
     // Implement your logic here to sanitize or select specific arguments for logging
     return args;
   }
-
-  private logError(
-    resolverName: string,
-    fieldName: string,
-    error: any,
-    response?: any,
-  ) {
+  // @TODO fix the type any
+  private logError(resolverName: string, fieldName: string, error: any) {
     // Adjusted method to provide more information about the error
     const errorMessage = error.message;
     const errorCode = error.extensions?.code || 'UNDEFINED_CODE';
@@ -66,7 +61,7 @@ export class GraphqlLoggingInterceptor implements LoggingInterceptor {
         code: errorCode,
         response: JSON.stringify(error.response),
         stackTrace: stackTrace, // Include the stack trace in the error details
-        fullError: error, // Include the stack trace in the error details
+        details: error, // Include the stack trace in the error details
       },
     });
   }
