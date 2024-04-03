@@ -28,7 +28,7 @@ describe('AttachmentResolver', () => {
       ],
     }).compile();
 
-    StorageFactory.addStorageDriver('s3', new MockFileSystemAdapter());
+    StorageFactory.addStorageDriver('local', new MockFileSystemAdapter());
     resolver = module.get<AttachmentResolver>(AttachmentResolver);
     uploadLinkService = module.get<UploadLinkService>(UploadLinkService);
   });
