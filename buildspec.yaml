@@ -6,7 +6,8 @@ phases:
       - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
   build:
     commands:
-      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - APP_VERSION=$(node -pe "require('./package.json').version")
+      - IMAGE_TAG=${APP_VERSION}-${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}
       - docker build -t file_storage . --build-arg NODE_JS_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/node:20-alpine
       - docker tag file_storage:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG
       - docker tag file_storage:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:latest
