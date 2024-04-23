@@ -144,4 +144,23 @@ describe('AttachmentResolver', () => {
 
     expect(result).toBeTruthy();
   });
+
+  it('should get criteria by ids', async () => {
+    const extension = 'png';
+    const name = 'test_image';
+
+    const uploadLink = await uploadLinkService.create({ extension });
+
+    const input = {
+      name: `${name}.${extension}`,
+      signedUrl: uploadLink.signedUrl,
+      description: 'test_description',
+    };
+
+    const attachment = await resolver.createAttachment(input);
+
+    const result = await resolver.getAttachmentsByIds([attachment.id]);
+
+    expect(result[0].id).toBe(attachment.id);
+  });
 });
