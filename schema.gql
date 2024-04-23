@@ -1,0 +1,60 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type FileEntity {
+  id: String!
+  url: String!
+  size: Float!
+  publicUrl: String!
+  type: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type AttachmentEntity {
+  id: String!
+  name: String!
+  extension: String!
+  files: [FileEntity!]
+}
+
+type UploadLinkEntity {
+  id: ID!
+  signedUrl: String!
+  staticUrl: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Query {
+  getAttachmentById(id: ID!): AttachmentEntity!
+  getAttachmentsByIds(id: [ID!]!): [AttachmentEntity!]!
+}
+
+type Mutation {
+  createAttachment(createAttachmentInput: CreateAttachmentInput!): AttachmentEntity!
+  updateAttachment(id: ID!, updateAttachmentInput: UpdateAttachmentInput!): AttachmentEntity!
+  removeAttachment(id: ID!): Boolean!
+  createUploadLink(createUploadLink: CreateUploadLinkInput!): UploadLinkEntity!
+}
+
+input CreateAttachmentInput {
+  name: String!
+  signedUrl: String!
+  description: String!
+}
+
+input UpdateAttachmentInput {
+  name: String
+  description: String
+}
+
+input CreateUploadLinkInput {
+  extension: String!
+}
