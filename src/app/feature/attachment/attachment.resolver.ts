@@ -35,7 +35,7 @@ export class AttachmentResolver {
 
   @Query(() => [AttachmentEntity])
   getAttachmentsByIds(
-    @Args('id', { type: () => [ID] }) ids: string[],
+    @Args('ids', { type: () => [ID] }) ids: string[],
   ): Promise<AttachmentEntity[]> {
     return this.attachmentService.getByIds(ids);
   }
