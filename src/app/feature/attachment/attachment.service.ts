@@ -68,7 +68,7 @@ export class AttachmentService {
   }
 
   async getByIds(ids: string[]): Promise<AttachmentEntity[]> {
-    return this.repository.findManyByCriteria({ id: ids });
+    return this.repository.findManyBy({ id: ids });
   }
 
   async updateById(

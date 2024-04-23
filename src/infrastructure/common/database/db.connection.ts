@@ -12,7 +12,7 @@ export interface DBConnection<T> {
     queryRunner?: IDBTransactionRunner,
   ): Promise<boolean>;
 
-  findManyByCriteria(criteria: Criteria<T>): Promise<T[]>;
+  findManyBy(criteria: Criteria<T>): Promise<T[]>;
 
   findBy(data: Partial<T>): Promise<T | null>;
   findOrFailBy(data: Partial<T>): Promise<T>;

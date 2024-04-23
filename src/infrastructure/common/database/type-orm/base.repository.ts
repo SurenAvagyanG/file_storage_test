@@ -40,9 +40,9 @@ export abstract class BaseTypeOrmRepository<T extends ObjectLiteral>
     return this.repository.find();
   }
 
-  findManyByCriteria(criteria: Criteria<T>): Promise<T[]> {
+  findManyBy(criteria: Criteria<T>): Promise<T[]> {
     const where = Object.entries(criteria).reduce((acc, [key, value]) => {
-      acc[key] = In(value);
+      acc[key] = Array.isArray(value) ? In(value) : value;
       return acc;
     }, {});
 

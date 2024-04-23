@@ -34,7 +34,7 @@ type UploadLinkEntity {
 
 type Query {
   getAttachmentById(id: ID!): AttachmentEntity!
-  getAttachmentsByIds(id: [ID!]!): [AttachmentEntity!]!
+  getAttachmentsByIds(ids: [ID!]!): [AttachmentEntity!]!
 }
 
 type Mutation {
