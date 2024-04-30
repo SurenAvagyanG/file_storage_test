@@ -1,5 +1,5 @@
 import { IDBTransactionRunner } from './db.transaction';
-import { Criteria } from '@infrastructure/common/database/type-orm/types';
+import { Criteria } from 'infrastructure/common/database/types';
 
 export interface DBConnection<T> {
   createWithTransaction(
