@@ -1,9 +1,10 @@
-import { Repository, BaseEntity } from 'typeorm';
+import { Repository, BaseEntity, In } from 'typeorm';
 import { QueryRunner } from 'typeorm/query-runner/QueryRunner';
 import { DBConnection } from '../db.connection';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { NotFoundException } from '@nestjs/common';
+import { Criteria } from 'infrastructure/common/database/types';
 
 export abstract class BaseTypeOrmRepository<T extends ObjectLiteral>
   implements DBConnection<T>
@@ -37,6 +38,15 @@ export abstract class BaseTypeOrmRepository<T extends ObjectLiteral>
 
   getAll(): Promise<T[]> {
     return this.repository.find();
+  }
+
+  findManyBy(criteria: Criteria<T>): Promise<T[]> {
+    const where = Object.entries(criteria).reduce((acc, [key, value]) => {
+      acc[key] = Array.isArray(value) ? In(value) : value;
+      return acc;
+    }, {});
+
+    return this.repository.find({ where });
   }
 
   findBy(data: Partial<T>): Promise<T | null> {
