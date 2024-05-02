@@ -63,6 +63,7 @@ export class S3Adapter implements IStorage {
       Bucket: this.credentials.bucket,
       ...params,
       Key: staticUrl,
+      ContentType: `image/${key}`,
     };
 
     const signedUrl = await this.s3.getSignedUrlPromise('putObject', payload);
