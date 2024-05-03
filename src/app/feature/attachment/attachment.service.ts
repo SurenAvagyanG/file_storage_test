@@ -67,6 +67,10 @@ export class AttachmentService {
     return await this.repository.findOrFailBy({ id });
   }
 
+  async getByIds(ids: string[]): Promise<AttachmentEntity[]> {
+    return this.repository.findManyBy({ id: ids });
+  }
+
   async updateById(
     id: string,
     updateAttachmentInput: UpdateAttachmentInput,

@@ -32,6 +32,14 @@ export class AttachmentResolver {
   ): Promise<AttachmentEntity> {
     return this.attachmentService.getById(id);
   }
+
+  @Query(() => [AttachmentEntity])
+  getAttachmentsByIds(
+    @Args('ids', { type: () => [ID] }) ids: string[],
+  ): Promise<AttachmentEntity[]> {
+    return this.attachmentService.getByIds(ids);
+  }
+
   @Mutation(() => AttachmentEntity)
   async updateAttachment(
     @Args('id', { type: () => ID }) id: string,
