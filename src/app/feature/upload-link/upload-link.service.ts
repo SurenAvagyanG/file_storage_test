@@ -19,6 +19,7 @@ export class UploadLinkService {
   ): Promise<UploadLinkEntity> {
     const data = await this.storageService.getUploadUrl(
       createUploadLinkInput.extension,
+      createUploadLinkInput.params,
     );
 
     return this.repository.createWithTransaction(data, runner);

@@ -57,4 +57,10 @@ input UpdateAttachmentInput {
 
 input CreateUploadLinkInput {
   extension: String!
+  params: UrlParamsInput
+}
+
+input UrlParamsInput {
+  Expires: Float
+  ContentType: String
 }
