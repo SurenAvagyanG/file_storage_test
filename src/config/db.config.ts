@@ -13,5 +13,8 @@ export const dbConfig = registerAs('db', () => ({
     synchronize: true,
     autoLoadEntities: true,
     entities: [],
+    extra: {
+      max: process.env.DB_MAX_REQUEST ?? 100,
+    },
   },
 }));
