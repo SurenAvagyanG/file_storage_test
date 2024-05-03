@@ -12,8 +12,8 @@ export interface FileUploadResponse {
 }
 
 export interface UrlParams {
-  Expires?: number;
-  ContentType?: string;
+  expires?: number;
+  contentType?: string;
 }
 
 export interface UploadUrlResponse {

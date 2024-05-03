@@ -3,8 +3,8 @@ import { InputType, Field } from '@nestjs/graphql';
 @InputType()
 export class UrlParamsInput {
   @Field({ nullable: true })
-  Expires?: number;
+  expires?: number;
 
   @Field({ nullable: true })
-  ContentType?: string;
+  contentType?: string;
 }

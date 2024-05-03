@@ -9,7 +9,7 @@ import {
 import { S3Credentials } from './s3-credentials';
 import { generateRandomStr } from '@infrastructure/utils';
 import { Logger } from '@nestjs/common';
-import { getFileExtension } from '@shared/utils';
+import { capitalizeParams, getFileExtension } from '@shared/utils';
 
 const filenameCharacterCount = 40;
 
@@ -59,9 +59,11 @@ export class S3Adapter implements IStorage {
   ): Promise<UploadUrlResponse> {
     const staticUrl = `${generateRandomStr(filenameCharacterCount)}.${key}`;
 
+    const transformedParams = capitalizeParams(params);
+
     const payload = {
       Bucket: this.credentials.bucket,
-      ...params,
+      ...transformedParams,
       Key: staticUrl,
     };
 

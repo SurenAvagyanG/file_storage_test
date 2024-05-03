@@ -61,6 +61,6 @@ input CreateUploadLinkInput {
 }
 
 input UrlParamsInput {
-  Expires: Float
-  ContentType: String
+  expires: Float
+  contentType: String
 }
