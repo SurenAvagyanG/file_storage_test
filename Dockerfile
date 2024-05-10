@@ -16,6 +16,9 @@ RUN yarn install
 # Copy the rest of the application code to the working directory
 COPY . .
 
+ENV FS_S3_REGION=us-east-1
+ENV FS_S3_BUCKET=experianto-development
+ENV FS_S3_PATH=https://s3.amazonaws.com/experianto-development
 # Build the application (assuming you have a build script defined in package.json)
 RUN yarn build
 
