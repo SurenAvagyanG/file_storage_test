@@ -17,8 +17,15 @@ export class TypeOrmTransactionService {
 
   async run<T>(callback: (runner: IDBTransactionRunner) => T): Promise<T> {
     const runner = await this.startTransaction();
-    const result = await callback(runner);
-    await runner.commitTransaction();
-    return result;
+    try {
+      const result = await callback(runner);
+      await runner.commitTransaction();
+      return result;
+    } catch (e) {
+      await runner.rollbackTransaction();
+      throw e;
+    } finally {
+      await runner.release();
+    }
   }
 }
