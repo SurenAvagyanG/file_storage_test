@@ -64,13 +64,13 @@ export class S3Adapter implements IStorage {
     const payload = {
       Bucket: this.credentials.bucket,
       ...transformedParams,
-      Key: staticUrl,
+      Key: `attachments/${staticUrl}`,
     };
 
     const signedUrl = await this.s3.getSignedUrlPromise('putObject', payload);
 
     return {
-      staticUrl,
+      staticUrl: `attachments/${staticUrl}`,
       signedUrl,
     };
   }
@@ -115,7 +115,7 @@ export class S3Adapter implements IStorage {
   }
 
   private getS3DuplicateParams(url: string): S3.Types.CopyObjectRequest {
-    const fileName = url.split('/')[1];
+    const fileName = url.split('/').pop() || '';
     return {
       Bucket: this.credentials.bucket,
       Key: `attachments/${this.generateFileName(fileName)}`,
