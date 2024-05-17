@@ -7,7 +7,6 @@ import { StorageService } from './storage.service';
 @Module({
   imports: [
     MulterModule.register({
-      dest: './uploads',
       storage: multer.memoryStorage(),
     }),
     ConfigModule,
