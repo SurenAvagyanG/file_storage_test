@@ -115,7 +115,7 @@ export class S3Adapter implements IStorage {
   }
 
   private getS3DuplicateParams(url: string): S3.Types.CopyObjectRequest {
-    const fileName = url.split('/')[1];
+    const fileName = url.split('/').pop() || '';
     return {
       Bucket: this.credentials.bucket,
       Key: `attachments/${this.generateFileName(fileName)}`,
