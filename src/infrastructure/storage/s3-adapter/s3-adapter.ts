@@ -64,13 +64,13 @@ export class S3Adapter implements IStorage {
     const payload = {
       Bucket: this.credentials.bucket,
       ...transformedParams,
-      Key: staticUrl,
+      Key: `attachments/${staticUrl}`,
     };
 
     const signedUrl = await this.s3.getSignedUrlPromise('putObject', payload);
 
     return {
-      staticUrl,
+      staticUrl: `attachments/${staticUrl}`,
       signedUrl,
     };
   }
