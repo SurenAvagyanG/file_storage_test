@@ -15,6 +15,8 @@ const filenameCharacterCount = 40;
 
 export class S3Adapter implements IStorage {
   private s3: S3;
+  // @TODO find nice way to solve issue with expiration
+  private expiresIn: 1209600;
 
   constructor(private credentials: S3Credentials) {
     config.update({
@@ -65,6 +67,7 @@ export class S3Adapter implements IStorage {
       Bucket: this.credentials.bucket,
       ...transformedParams,
       Key: `attachments/${staticUrl}`,
+      Expires: this.expiresIn,
     };
 
     const signedUrl = await this.s3.getSignedUrlPromise('putObject', payload);
@@ -79,6 +82,7 @@ export class S3Adapter implements IStorage {
     const payload = {
       Key: key,
       Bucket: this.credentials.bucket,
+      Expires: this.expiresIn,
       ...params,
     };
 
