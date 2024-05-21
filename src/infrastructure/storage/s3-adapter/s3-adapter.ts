@@ -15,6 +15,7 @@ const filenameCharacterCount = 40;
 
 export class S3Adapter implements IStorage {
   private s3: S3;
+  // @TODO find nice way to solve issue with expiration
   private expiresIn: 1209600;
 
   constructor(private credentials: S3Credentials) {
