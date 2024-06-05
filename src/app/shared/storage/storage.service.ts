@@ -15,8 +15,12 @@ export class StorageService {
     return StorageFactory.getStorage(this.driver);
   }
 
-  upload(file: Express.Multer.File): Promise<FileUploadResponse> {
-    return this.storage.upload(file);
+  upload(
+    file: Buffer,
+    name: string,
+    contentType: string,
+  ): Promise<FileUploadResponse> {
+    return this.storage.upload(file, name, contentType);
   }
 
   duplicate(url: string): Promise<FileUploadResponse> {

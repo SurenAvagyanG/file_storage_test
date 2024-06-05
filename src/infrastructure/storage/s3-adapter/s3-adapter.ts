@@ -28,8 +28,13 @@ export class S3Adapter implements IStorage {
     this.s3 = new S3();
   }
 
-  async upload(file: Express.Multer.File): Promise<FileUploadResponse> {
-    const params = this.getS3UploadParams(file);
+  async upload(
+    file: Buffer,
+    name: string,
+    contentType: string,
+  ): Promise<FileUploadResponse> {
+    const params = this.getS3UploadParams(file, name, contentType);
+
     await this.s3.upload(params).promise();
 
     return {
@@ -109,12 +114,15 @@ export class S3Adapter implements IStorage {
   }
 
   private getS3UploadParams(
-    file: Express.Multer.File,
+    fileBuffer: Buffer,
+    fileName: string,
+    contentType: string,
   ): S3.Types.PutObjectRequest {
     return {
       Bucket: this.credentials.bucket,
-      Key: `attachments/${this.generateFileName(file.originalname)}`,
-      Body: file.buffer,
+      Key: `attachments/${this.generateFileName(fileName)}`,
+      Body: fileBuffer,
+      ContentType: contentType,
     };
   }
 
@@ -122,7 +130,7 @@ export class S3Adapter implements IStorage {
     const fileName = url.split('/').pop() || '';
     return {
       Bucket: this.credentials.bucket,
-      Key: `attachments/${this.generateFileName(fileName)}`,
+      Key: `attachments/${this.generateFileName(`${fileName}.jpeg`)}`,
       CopySource: `${this.credentials.bucket}/${url}`,
     };
   }

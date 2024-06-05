@@ -12,6 +12,7 @@ import {
   HttpModule,
   ImageManagerModule,
 } from '@infrastructure/common';
+import { AttachmentResizeService } from '@feature/attachment/attachment-resize.service';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import {
   providers: [
     AttachmentResolver,
     AttachmentService,
+    AttachmentResizeService,
     {
       provide: AttachmentConnection,
       useClass: AttachmentRepository,
