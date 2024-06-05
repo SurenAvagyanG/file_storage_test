@@ -50,11 +50,13 @@ export class AttachmentService {
 
     const resizedBuffers = await this.resizeFile(fileBuffer);
 
+    const extension = getFileExtension(createAttachmentInput.name);
+
     const attachment = await this.repository.createWithTransaction(
       {
         name: getFileName(createAttachmentInput.name),
         type: getAttachmentType(createAttachmentInput.name),
-        extension: getFileExtension(createAttachmentInput.name),
+        extension,
         //@TODO fill correct information after auth service implementation
         creator_id: 'test_user_id',
         creator_type: 'test_user_type',
@@ -79,26 +81,25 @@ export class AttachmentService {
 
     const resizedFiles = await Promise.all(
       this.sizes.map(async (sizeInfo, index) => {
-        const uploadLink = await this.uploadLinkService.create({
-          extension: getFileExtension(createAttachmentInput.name),
-          params: {
-            contentType: `image/${getFileExtension(createAttachmentInput.name)}`,
-          },
+        const contentType = `image/${extension}`;
+
+        const uploadUrl = await this.storageService.getUploadUrl(extension, {
+          contentType,
         });
 
         await this.uploadResizedFile(
-          uploadLink.signedUrl,
+          uploadUrl.signedUrl,
           resizedBuffers[index],
-          `image/${getFileExtension(createAttachmentInput.name)}`,
+          contentType,
         );
 
         const fileMeta = await this.storageService.getFileMeta(
-          uploadLink.staticUrl,
+          uploadUrl.staticUrl,
         );
 
         return this.fileService.create(
           {
-            url: uploadLink.staticUrl,
+            url: uploadUrl.staticUrl,
             attachment,
             size: fileMeta.size,
             type: this.sizes[index].label,
