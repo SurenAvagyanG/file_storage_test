@@ -35,6 +35,8 @@ type UploadLinkEntity {
 type Query {
   getAttachmentById(id: ID!): AttachmentEntity!
   getAttachmentsByIds(ids: [ID!]!): [AttachmentEntity!]!
+  getHealthMessage: String!
+  getVersionMessage: String!
 }
 
 type Mutation {

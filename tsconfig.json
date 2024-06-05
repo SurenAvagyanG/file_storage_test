@@ -18,6 +18,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "composite": true,
+    "resolveJsonModule": true,
     "paths": {
       "@config/*": ["./config/*"],
       "@infrastructure/*": ["./infrastructure/*"],
@@ -27,6 +28,10 @@
       "@shared/*": ["./app/shared/*"]
     }
   },
+  "include": [
+    "src/**/*.ts",
+    "package.json"
+  ],
   "rules": {
     "no-restricted-syntax": "off"
   }
