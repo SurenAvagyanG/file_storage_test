@@ -1,6 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
-import { DBConnection, IDBTransactionRunner } from '@infrastructure/common';
+import {
+  DBConnection,
+  HttpService,
+  IDBTransactionRunner,
+  ImageManagerService,
+} from '@infrastructure/common';
 import { StorageService } from '@shared/storage';
 import { UploadLinkService } from '@feature/upload-link/upload-link.service';
 import { FileService } from '@feature/file/file.service';
@@ -16,13 +21,21 @@ import { UpdateAttachmentInput } from '@feature/attachment/dto/update-attachment
 
 @Injectable()
 export class AttachmentService {
+  private sizes = [
+    { size: 300, label: FileType.Small },
+    { size: 600, label: FileType.Medium },
+    { size: 900, label: FileType.High },
+  ];
   constructor(
     @Inject(AttachmentConnection)
     private repository: DBConnection<AttachmentEntity>,
     private storageService: StorageService,
     private uploadLinkService: UploadLinkService,
     private fileService: FileService,
+    private httpService: HttpService,
+    private imageManagerService: ImageManagerService,
   ) {}
+
   async create(
     createAttachmentInput: CreateAttachmentInput,
     runner: IDBTransactionRunner,
@@ -31,7 +44,11 @@ export class AttachmentService {
       signedUrl: createAttachmentInput.signedUrl,
     });
 
-    const meta = await this.storageService.getFileMeta(uploadProcess.staticUrl);
+    const fileBuffer = await this.fetchFile(
+      await this.storageService.getDownloadUrl(uploadProcess.staticUrl),
+    );
+
+    const resizedBuffers = await this.resizeFile(fileBuffer);
 
     const attachment = await this.repository.createWithTransaction(
       {
@@ -46,17 +63,52 @@ export class AttachmentService {
       runner,
     );
 
-    attachment.files = [
-      await this.fileService.create(
-        {
-          url: uploadProcess.staticUrl,
-          attachment: attachment,
-          size: meta.size,
-          type: FileType.Default,
-        },
-        runner,
-      ),
-    ];
+    const originalFileMeta = await this.storageService.getFileMeta(
+      uploadProcess.staticUrl,
+    );
+
+    const originalFile = await this.fileService.create(
+      {
+        url: uploadProcess.staticUrl,
+        attachment,
+        size: originalFileMeta.size,
+        type: FileType.Default,
+      },
+      runner,
+    );
+
+    const resizedFiles = await Promise.all(
+      this.sizes.map(async (sizeInfo, index) => {
+        const uploadLink = await this.uploadLinkService.create({
+          extension: getFileExtension(createAttachmentInput.name),
+          params: {
+            contentType: `image/${getFileExtension(createAttachmentInput.name)}`,
+          },
+        });
+
+        await this.uploadResizedFile(
+          uploadLink.signedUrl,
+          resizedBuffers[index],
+          `image/${getFileExtension(createAttachmentInput.name)}`,
+        );
+
+        const fileMeta = await this.storageService.getFileMeta(
+          uploadLink.staticUrl,
+        );
+
+        return this.fileService.create(
+          {
+            url: uploadLink.staticUrl,
+            attachment,
+            size: fileMeta.size,
+            type: this.sizes[index].label,
+          },
+          runner,
+        );
+      }),
+    );
+
+    attachment.files = [originalFile, ...resizedFiles];
 
     await this.uploadLinkService.remove(uploadProcess.id, runner);
 
@@ -81,5 +133,32 @@ export class AttachmentService {
 
   async removeById(id: string): Promise<boolean> {
     return await this.repository.removeWithTransaction(id);
+  }
+
+  private async fetchFile(url: string): Promise<Buffer> {
+    const response = await this.httpService.get(url, {
+      responseType: 'arraybuffer',
+    });
+    return Buffer.from(response.data);
+  }
+
+  private async resizeFile(fileBuffer: Buffer): Promise<Buffer[]> {
+    return Promise.all(
+      this.sizes.map(({ size }) =>
+        this.imageManagerService.resize(fileBuffer, size),
+      ),
+    );
+  }
+
+  private async uploadResizedFile(
+    url: string,
+    buffer: Buffer,
+    contentType: string,
+  ): Promise<void> {
+    await this.httpService.put(url, buffer, {
+      headers: {
+        'Content-Type': contentType,
+      },
+    });
   }
 }

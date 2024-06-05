@@ -7,7 +7,11 @@ import { StorageModule } from '@shared/storage';
 import { UploadLinkModule } from '@feature/upload-link/upload-link.module';
 import { FileModule } from '@feature/file/file.module';
 import { AttachmentConnection } from '@feature/attachment/constants/tokens.const';
-import { DatabaseModule } from '@infrastructure/common';
+import {
+  DatabaseModule,
+  HttpModule,
+  ImageManagerModule,
+} from '@infrastructure/common';
 
 @Module({
   imports: [
@@ -15,6 +19,8 @@ import { DatabaseModule } from '@infrastructure/common';
     StorageModule,
     UploadLinkModule,
     FileModule,
+    HttpModule,
+    ImageManagerModule,
   ],
   providers: [
     AttachmentResolver,
