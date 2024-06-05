@@ -7,10 +7,11 @@ import { dbConfig } from '@config/db.config';
 import { fileSystemConfig } from '@config/file-system.config';
 import { StorageFactory } from '@infrastructure/storage';
 import { MockFileSystemAdapter } from '@infrastructure/storage/mock-file-system/mock-file-system-adapter';
-import { DatabaseTestingModule } from '@infrastructure/common';
+import { DatabaseTestingModule, HttpService } from '@infrastructure/common';
 import { UploadLinkModule } from '@feature/upload-link/upload-link.module';
 import { UploadLinkService } from '@feature/upload-link/upload-link.service';
 import { NotFoundException } from '@nestjs/common';
+import { AxiosResponse } from 'axios';
 
 describe('AttachmentResolver', () => {
   let resolver: AttachmentResolver;
@@ -31,6 +32,35 @@ describe('AttachmentResolver', () => {
     StorageFactory.addStorageDriver('s3', new MockFileSystemAdapter());
     resolver = module.get<AttachmentResolver>(AttachmentResolver);
     uploadLinkService = module.get<UploadLinkService>(UploadLinkService);
+
+    const base64Image =
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAAC0lEQVR42mP8/wcAAgABAIZXCiEAAAAASUVORK5CYII=';
+    const imageBuffer = Buffer.from(base64Image, 'base64');
+
+    jest.spyOn(HttpService.prototype, 'get').mockImplementation(() => {
+      const response = {
+        data: imageBuffer,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {
+          responseType: 'arraybuffer',
+        },
+      };
+
+      return Promise.resolve(response as AxiosResponse);
+    });
+
+    jest.spyOn(HttpService.prototype, 'put').mockImplementation(() => {
+      const response = {
+        data: null,
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config: {},
+      };
+      return Promise.resolve(response as AxiosResponse);
+    });
   });
 
   it('should be defined', () => {
