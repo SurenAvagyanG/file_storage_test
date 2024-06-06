@@ -11,6 +11,7 @@ import {
 import { FileType } from '@domain/constants';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
+
 @ObjectType()
 @Entity()
 export class FileEntity extends BaseEntity {

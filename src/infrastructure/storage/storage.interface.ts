@@ -1,8 +1,13 @@
 export interface IStorage {
-  upload(file: Express.Multer.File): Promise<FileUploadResponse>;
+  upload(
+    file: Buffer,
+    name: string,
+    contentType: string,
+  ): Promise<FileUploadResponse>;
   duplicate(url: string): Promise<FileUploadResponse>;
   delete(key: string): Promise<void>;
   getUploadUrl(key: string, params?: UrlParams): Promise<UploadUrlResponse>;
+  getFileBufferByUrl(url: string): Promise<Buffer>;
   getDownloadUrl(key: string, params?: UrlParams): Promise<string>;
   getFileMeta(key: string, params?: UrlParams): Promise<FileMeta | null>;
 }

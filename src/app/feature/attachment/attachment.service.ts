@@ -13,6 +13,7 @@ import {
 } from '@shared/utils';
 import { CreateAttachmentInput } from '@feature/attachment/dto/create-attachment.input';
 import { UpdateAttachmentInput } from '@feature/attachment/dto/update-attachment.input';
+import { AttachmentResizeService } from '@feature/attachment/attachment-resize.service';
 
 @Injectable()
 export class AttachmentService {
@@ -22,7 +23,9 @@ export class AttachmentService {
     private storageService: StorageService,
     private uploadLinkService: UploadLinkService,
     private fileService: FileService,
+    private attachmentResizeService: AttachmentResizeService,
   ) {}
+
   async create(
     createAttachmentInput: CreateAttachmentInput,
     runner: IDBTransactionRunner,
@@ -31,13 +34,13 @@ export class AttachmentService {
       signedUrl: createAttachmentInput.signedUrl,
     });
 
-    const meta = await this.storageService.getFileMeta(uploadProcess.staticUrl);
+    const extension = getFileExtension(createAttachmentInput.name);
 
     const attachment = await this.repository.createWithTransaction(
       {
         name: getFileName(createAttachmentInput.name),
         type: getAttachmentType(createAttachmentInput.name),
-        extension: getFileExtension(createAttachmentInput.name),
+        extension,
         //@TODO fill correct information after auth service implementation
         creator_id: 'test_user_id',
         creator_type: 'test_user_type',
@@ -46,17 +49,28 @@ export class AttachmentService {
       runner,
     );
 
-    attachment.files = [
-      await this.fileService.create(
-        {
-          url: uploadProcess.staticUrl,
-          attachment: attachment,
-          size: meta.size,
-          type: FileType.Default,
-        },
-        runner,
-      ),
-    ];
+    const originalFileMeta = await this.storageService.getFileMeta(
+      uploadProcess.staticUrl,
+    );
+
+    const originalFile = await this.fileService.create(
+      {
+        url: uploadProcess.staticUrl,
+        attachment,
+        size: originalFileMeta.size,
+        type: FileType.Default,
+      },
+      runner,
+    );
+
+    const resizedFiles = await this.attachmentResizeService.uploadResizedImages(
+      attachment,
+      extension,
+      uploadProcess.staticUrl,
+      runner,
+    );
+
+    attachment.files = [originalFile, ...resizedFiles];
 
     await this.uploadLinkService.remove(uploadProcess.id, runner);
 

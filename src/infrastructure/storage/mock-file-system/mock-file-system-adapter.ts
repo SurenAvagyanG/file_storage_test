@@ -24,7 +24,7 @@ export class MockFileSystemAdapter implements IStorage {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  upload(file: Express.Multer.File): Promise<FileUploadResponse> {
+  upload(file: Buffer, name: string): Promise<FileUploadResponse> {
     return Promise.resolve({ url: 'testfile.png' });
   }
 
@@ -36,5 +36,9 @@ export class MockFileSystemAdapter implements IStorage {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getFileMeta(key: string, params?: UrlParams): Promise<FileMeta> {
     return Promise.resolve({ size: 1 });
+  }
+
+  getFileBufferByUrl(url: string): Promise<Buffer> {
+    return Promise.resolve(Buffer.from('test'));
   }
 }

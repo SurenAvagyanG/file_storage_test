@@ -11,6 +11,7 @@ import { DatabaseTestingModule } from '@infrastructure/common';
 import { UploadLinkModule } from '@feature/upload-link/upload-link.module';
 import { UploadLinkService } from '@feature/upload-link/upload-link.service';
 import { NotFoundException } from '@nestjs/common';
+import { StorageService } from '@shared/storage';
 
 describe('AttachmentResolver', () => {
   let resolver: AttachmentResolver;
@@ -31,6 +32,16 @@ describe('AttachmentResolver', () => {
     StorageFactory.addStorageDriver('s3', new MockFileSystemAdapter());
     resolver = module.get<AttachmentResolver>(AttachmentResolver);
     uploadLinkService = module.get<UploadLinkService>(UploadLinkService);
+
+    const base64Image =
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAAC0lEQVR42mP8/wcAAgABAIZXCiEAAAAASUVORK5CYII=';
+    const imageBuffer = Buffer.from(base64Image, 'base64');
+
+    jest
+      .spyOn(StorageService.prototype, 'getFileBufferByUrl')
+      .mockImplementation(() => {
+        return Promise.resolve(imageBuffer);
+      });
   });
 
   it('should be defined', () => {
