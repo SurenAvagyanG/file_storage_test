@@ -1,9 +1,9 @@
 import * as sharp from 'sharp';
 import { Injectable } from '@nestjs/common';
-import { ImageManagerAdapter } from '@infrastructure/common/image-manager/image-manager-adapter.abstract';
+import { ImageResizerAdapter } from '@feature/image-resizer/image-resizer-adapter.abstract';
 
 @Injectable()
-export class SharpAdapter extends ImageManagerAdapter {
+export class SharpAdapter extends ImageResizerAdapter {
   async resize(buffer: Buffer, size: number): Promise<Buffer> {
     return sharp(buffer)
       .resize(size, size, {

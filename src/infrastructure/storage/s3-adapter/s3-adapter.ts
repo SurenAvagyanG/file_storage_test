@@ -96,6 +96,20 @@ export class S3Adapter implements IStorage {
     return url;
   }
 
+  async getFileBufferByUrl(url: string): Promise<Buffer> {
+    const params = {
+      Bucket: this.credentials.bucket,
+      Key: new URL(url).pathname.substring(1),
+    };
+
+    try {
+      return (await this.s3.getObject(params).promise()).Body as Buffer;
+    } catch (error) {
+      Logger.error('Error getting file from S3:', error);
+      throw error;
+    }
+  }
+
   async getFileMeta(key: string, params?: UrlParams): Promise<FileMeta | null> {
     const payload = {
       Key: key,
@@ -130,7 +144,7 @@ export class S3Adapter implements IStorage {
     const fileName = url.split('/').pop() || '';
     return {
       Bucket: this.credentials.bucket,
-      Key: `attachments/${this.generateFileName(`${fileName}.jpeg`)}`,
+      Key: `attachments/${this.generateFileName(fileName)}`,
       CopySource: `${this.credentials.bucket}/${url}`,
     };
   }

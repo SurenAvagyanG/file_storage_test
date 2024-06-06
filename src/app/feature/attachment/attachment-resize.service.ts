@@ -1,29 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
-import {
-  HttpService,
-  IDBTransactionRunner,
-  ImageManagerService,
-} from '@infrastructure/common';
+import { IDBTransactionRunner } from '@infrastructure/common';
 import { StorageService } from '@shared/storage';
 import { FileService } from '@feature/file/file.service';
 import { FileType } from '@domain/constants';
 import { FileEntity } from '@feature/file/entities/file.entity';
 import { generateRandomStr } from '@infrastructure/utils';
+import { ImageResizerService } from '@feature/image-resizer';
 
 @Injectable()
 export class AttachmentResizeService {
   private sizes = [
-    { size: 300, label: FileType.Small },
-    { size: 600, label: FileType.Medium },
-    { size: 900, label: FileType.High },
+    { size: 300, label: FileType.Small, name: 'small' },
+    { size: 600, label: FileType.Medium, name: 'medium' },
+    { size: 900, label: FileType.High, name: 'high' },
   ];
 
   constructor(
     private storageService: StorageService,
     private fileService: FileService,
-    private httpService: HttpService,
-    private imageManagerService: ImageManagerService,
+    private imageManagerService: ImageResizerService,
   ) {}
 
   async uploadResizedImages(
@@ -32,9 +28,7 @@ export class AttachmentResizeService {
     staticUrl: string,
     runner: IDBTransactionRunner,
   ): Promise<FileEntity[]> {
-    const fileBuffer = await this.fetchFile(
-      await this.storageService.getDownloadUrl(staticUrl),
-    );
+    const fileBuffer = await this.fetchFile(staticUrl);
 
     const resizedBuffers = await this.resizeFile(fileBuffer);
 
@@ -43,6 +37,7 @@ export class AttachmentResizeService {
         const url = await this.uploadResizedFile(
           resizedBuffers[index],
           extension,
+          sizeInfo.name,
         );
 
         const fileMeta = await this.storageService.getFileMeta(url);
@@ -61,10 +56,9 @@ export class AttachmentResizeService {
   }
 
   private async fetchFile(url: string): Promise<Buffer> {
-    const response = await this.httpService.get(url, {
-      responseType: 'arraybuffer',
-    });
-    return Buffer.from(response.data);
+    const downloadUrl = await this.storageService.getDownloadUrl(url);
+
+    return this.storageService.getFileBufferByUrl(downloadUrl);
   }
 
   private async resizeFile(fileBuffer: Buffer): Promise<Buffer[]> {
@@ -78,11 +72,12 @@ export class AttachmentResizeService {
   private async uploadResizedFile(
     buffer: Buffer,
     extension: string,
+    folderName: string,
   ): Promise<string> {
     return (
       await this.storageService.upload(
         buffer,
-        `${generateRandomStr(10)}.${extension}`,
+        `${folderName}/${generateRandomStr(10)}.${extension}`,
         `image/${extension}`,
       )
     ).url;

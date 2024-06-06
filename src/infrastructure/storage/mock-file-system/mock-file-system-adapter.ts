@@ -37,4 +37,8 @@ export class MockFileSystemAdapter implements IStorage {
   getFileMeta(key: string, params?: UrlParams): Promise<FileMeta> {
     return Promise.resolve({ size: 1 });
   }
+
+  getFileBufferByUrl(url: string): Promise<Buffer> {
+    return Promise.resolve(Buffer.from('test'));
+  }
 }

@@ -7,6 +7,7 @@ export interface IStorage {
   duplicate(url: string): Promise<FileUploadResponse>;
   delete(key: string): Promise<void>;
   getUploadUrl(key: string, params?: UrlParams): Promise<UploadUrlResponse>;
+  getFileBufferByUrl(url: string): Promise<Buffer>;
   getDownloadUrl(key: string, params?: UrlParams): Promise<string>;
   getFileMeta(key: string, params?: UrlParams): Promise<FileMeta | null>;
 }

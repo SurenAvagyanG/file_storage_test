@@ -48,4 +48,8 @@ export class StorageService {
 
     return meta;
   }
+
+  async getFileBufferByUrl(url: string): Promise<Buffer> {
+    return this.storage.getFileBufferByUrl(url);
+  }
 }

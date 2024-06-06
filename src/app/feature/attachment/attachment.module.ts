@@ -7,12 +7,9 @@ import { StorageModule } from '@shared/storage';
 import { UploadLinkModule } from '@feature/upload-link/upload-link.module';
 import { FileModule } from '@feature/file/file.module';
 import { AttachmentConnection } from '@feature/attachment/constants/tokens.const';
-import {
-  DatabaseModule,
-  HttpModule,
-  ImageManagerModule,
-} from '@infrastructure/common';
+import { DatabaseModule } from '@infrastructure/common';
 import { AttachmentResizeService } from '@feature/attachment/attachment-resize.service';
+import { ImageResizerModule } from '@feature/image-resizer';
 
 @Module({
   imports: [
@@ -20,8 +17,7 @@ import { AttachmentResizeService } from '@feature/attachment/attachment-resize.s
     StorageModule,
     UploadLinkModule,
     FileModule,
-    HttpModule,
-    ImageManagerModule,
+    ImageResizerModule,
   ],
   providers: [
     AttachmentResolver,
