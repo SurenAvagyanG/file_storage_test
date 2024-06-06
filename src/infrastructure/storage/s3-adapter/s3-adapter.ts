@@ -99,7 +99,7 @@ export class S3Adapter implements IStorage {
   async getFileBufferByUrl(url: string): Promise<Buffer> {
     const params = {
       Bucket: this.credentials.bucket,
-      Key: new URL(url).pathname.substring(1),
+      Key: url,
     };
 
     try {

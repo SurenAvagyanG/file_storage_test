@@ -28,7 +28,7 @@ export class AttachmentResizeService {
     staticUrl: string,
     runner: IDBTransactionRunner,
   ): Promise<FileEntity[]> {
-    const fileBuffer = await this.fetchFile(staticUrl);
+    const fileBuffer = await this.storageService.getFileBufferByUrl(staticUrl);
 
     const resizedBuffers = await this.resizeFile(fileBuffer);
 
@@ -53,12 +53,6 @@ export class AttachmentResizeService {
         );
       }),
     );
-  }
-
-  private async fetchFile(url: string): Promise<Buffer> {
-    const downloadUrl = await this.storageService.getDownloadUrl(url);
-
-    return this.storageService.getFileBufferByUrl(downloadUrl);
   }
 
   private async resizeFile(fileBuffer: Buffer): Promise<Buffer[]> {
