@@ -1,17 +1,78 @@
-import { Repository, BaseEntity, In } from 'typeorm';
+import {
+  Repository,
+  BaseEntity,
+  FindOptionsWhere,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { QueryRunner } from 'typeorm/query-runner/QueryRunner';
 import { DBConnection } from '../db.connection';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { ObjectLiteral } from 'typeorm/common/ObjectLiteral';
 import { NotFoundException } from '@nestjs/common';
-import { Criteria } from 'infrastructure/common/database/types';
+import {
+  Criteria,
+  CustomFindOptions,
+  GetAverageByInterface,
+} from '@infrastructure/common/database/types';
+import {
+  FindManyCustomService,
+  FindManyService,
+} from '@infrastructure/common/database/type-orm/find-many';
+import { FindManyEnum } from '@infrastructure/common/database/enums';
 
 export abstract class BaseTypeOrmRepository<T extends ObjectLiteral>
   implements DBConnection<T>
 {
-  protected abstract entityClass: typeof BaseEntity;
+  protected entityClass: typeof BaseEntity;
+  private findManyService: FindManyService<T>;
+  private findManyCustomService: FindManyCustomService<T>;
 
-  protected constructor(protected repository: Repository<T>) {}
+  protected constructor(protected repository: Repository<T>) {
+    this.findManyService = new FindManyService(repository);
+    this.findManyCustomService = new FindManyCustomService(repository);
+  }
+
+  async bulkInsert(
+    entities: Partial<T>[],
+    queryRunner?: QueryRunner,
+  ): Promise<T[]> {
+    const repo = queryRunner
+      ? queryRunner.manager.getRepository(this.entityClass)
+      : this.repository;
+
+    const insertResult = await repo.insert(entities as T[]);
+
+    const ids = insertResult.identifiers.map((identifier) => identifier.id);
+
+    return await this.findManyBy(
+      {
+        id: ids,
+      },
+      {},
+      queryRunner,
+    );
+  }
+
+  findManyBy(
+    criteria: Criteria<T>,
+    options: CustomFindOptions<T> = {},
+    queryRunner?: QueryRunner,
+    findManyEnum?: FindManyEnum,
+  ): Promise<T[]> {
+    return findManyEnum === FindManyEnum.Custom
+      ? this.findManyCustomService.findManyBy(
+          criteria,
+          options,
+          this.entityClass,
+          queryRunner,
+        )
+      : this.findManyService.findManyBy(
+          criteria,
+          options,
+          this.entityClass,
+          queryRunner,
+        );
+  }
 
   createWithTransaction(entity: T, queryRunner?: QueryRunner): Promise<T> {
     if (queryRunner) {
@@ -31,32 +92,46 @@ export abstract class BaseTypeOrmRepository<T extends ObjectLiteral>
       ? queryRunner.manager.getRepository(this.entityClass)
       : this.repository;
 
+    const result = await repo.softDelete(entityId);
+
+    return Boolean(result.affected);
+  }
+
+  async removeHardWithTransaction(
+    entityId: string,
+    queryRunner?: QueryRunner,
+  ): Promise<boolean> {
+    const repo = queryRunner
+      ? queryRunner.manager.getRepository(this.entityClass)
+      : this.repository;
+
     const result = await repo.delete(entityId);
 
     return Boolean(result.affected);
   }
 
-  getAll(): Promise<T[]> {
-    return this.repository.find();
+  findBy(
+    criteria: Criteria<T>,
+    options?: FindOptionsWhere<T>,
+    queryRunner?: QueryRunner,
+  ): Promise<T | null> {
+    const repo = queryRunner
+      ? queryRunner.manager.getRepository(this.entityClass)
+      : this.repository;
+
+    const where = this.findManyService.buildWhere(criteria);
+
+    return repo.findOne({
+      where,
+      ...options,
+    } as Criteria<T>) as Promise<T | null>;
   }
 
-  findManyBy(criteria: Criteria<T>): Promise<T[]> {
-    const where = Object.entries(criteria).reduce((acc, [key, value]) => {
-      acc[key] = Array.isArray(value) ? In(value) : value;
-      return acc;
-    }, {});
-
-    return this.repository.find({ where });
-  }
-
-  findBy(data: Partial<T>): Promise<T | null> {
-    return this.repository.findOne({
-      where: data,
-    });
-  }
-
-  async findOrFailBy(data: Partial<T>): Promise<T> {
-    const item = await this.findBy(data);
+  async findOrFailBy(
+    criteria: Criteria<T>,
+    queryRunner?: QueryRunner,
+  ): Promise<T> {
+    const item = await this.findBy(criteria, {}, queryRunner);
 
     if (!item) {
       throw new NotFoundException('Entity not found');
@@ -77,5 +152,58 @@ export abstract class BaseTypeOrmRepository<T extends ObjectLiteral>
     const result = await repo.update(id, payload as QueryDeepPartialEntity<T>);
 
     return Boolean(result.affected);
+  }
+
+  async getMax(fieldName: string, conditions: ObjectLiteral): Promise<number> {
+    const queryBuilder = this.repository.createQueryBuilder('entity');
+
+    queryBuilder.select(`MAX("${fieldName}")`, 'maxValue');
+
+    this.findManyCustomService.applyCriteria(queryBuilder);
+
+    Object.keys(conditions).forEach((key) => {
+      queryBuilder.andWhere(`${key} = :value`, { value: conditions[key] });
+    });
+
+    const result = await queryBuilder.getRawOne();
+    return result.maxValue || 0;
+  }
+
+  async findCountBy(
+    criteria: Criteria<T>,
+    queryRunner?: QueryRunner,
+  ): Promise<number> {
+    const repo = queryRunner
+      ? queryRunner.manager.getRepository(this.entityClass)
+      : this.repository;
+
+    const where = this.findManyService.buildWhere(criteria);
+
+    return repo.count({ where });
+  }
+
+  async getAverageBy(
+    criterion: GetAverageByInterface,
+    fieldName: string,
+    queryRunner?: QueryRunner,
+  ): Promise<number> {
+    const repo = queryRunner
+      ? queryRunner.manager.getRepository(this.entityClass)
+      : this.repository;
+
+    const queryBuilder = repo
+      .createQueryBuilder('entity')
+      .where(`entity.${criterion.key} = :${criterion.key}`, {
+        [criterion.key]: criterion.value,
+      });
+
+    this.findManyCustomService.applyCriteria(
+      queryBuilder as SelectQueryBuilder<T>,
+    );
+
+    queryBuilder.select(`AVG(entity.${fieldName})`, 'avg');
+
+    const result = await queryBuilder.getRawOne();
+    return +parseFloat(result.avg || 0).toFixed(1);
   }
 }

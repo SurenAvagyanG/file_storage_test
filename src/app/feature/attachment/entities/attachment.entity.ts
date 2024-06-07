@@ -1,23 +1,12 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 import { FileEntity } from '@feature/file/entities/file.entity';
 import { AttachmentType } from '@domain/constants';
+import { CommonEntity } from '@infrastructure/common';
 
 @Entity()
 @ObjectType()
-export class AttachmentEntity extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid')
-  @Field()
-  id: string;
-
+export class AttachmentEntity extends CommonEntity {
   @Column({ type: 'varchar' })
   @Field()
   name: string;
@@ -44,10 +33,4 @@ export class AttachmentEntity extends BaseEntity {
   })
   @Field(() => [FileEntity], { nullable: true })
   files: FileEntity[];
-
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
-  updatedAt: Date;
 }

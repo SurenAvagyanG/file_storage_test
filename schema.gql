@@ -4,12 +4,12 @@
 
 type FileEntity {
   id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   url: String!
   size: Float!
   publicUrl: String!
   type: Float!
-  createdAt: DateTime!
-  updatedAt: DateTime!
 }
 
 """
@@ -19,17 +19,19 @@ scalar DateTime
 
 type AttachmentEntity {
   id: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
   name: String!
   extension: String!
   files: [FileEntity!]
 }
 
 type UploadLinkEntity {
-  id: ID!
-  signedUrl: String!
-  staticUrl: String!
+  id: String!
   createdAt: DateTime!
   updatedAt: DateTime!
+  signedUrl: String!
+  staticUrl: String!
 }
 
 type Query {

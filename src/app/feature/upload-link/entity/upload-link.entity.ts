@@ -1,20 +1,10 @@
-import {
-  BaseEntity,
-  Column,
-  CreateDateColumn,
-  Entity,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm';
-import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { Column, Entity } from 'typeorm';
+import { Field, ObjectType } from '@nestjs/graphql';
+import { CommonEntity } from '@infrastructure/common';
 
 @ObjectType()
 @Entity()
-export class UploadLinkEntity extends BaseEntity {
-  @Field(() => ID)
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class UploadLinkEntity extends CommonEntity {
   @Field()
   @Column({ type: 'varchar' })
   signedUrl: string;
@@ -22,12 +12,4 @@ export class UploadLinkEntity extends BaseEntity {
   @Field()
   @Column({ type: 'varchar' })
   staticUrl: string;
-
-  @Field()
-  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
-  createdAt: Date;
-
-  @Field()
-  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
-  updatedAt: Date;
 }
