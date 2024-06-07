@@ -4,6 +4,7 @@ import { MainService } from './main.service';
 import { ConfigModule } from '@nestjs/config';
 import { appConfig } from '@config/app.config';
 import { dbConfig } from '@config/db.config';
+import { MainResolver } from '@feature/main/main.resolver';
 
 @Module({
   imports: [
@@ -12,6 +13,6 @@ import { dbConfig } from '@config/db.config';
     }),
   ],
   controllers: [MainController],
-  providers: [MainService],
+  providers: [MainService, MainResolver],
 })
 export class MainModule {}
