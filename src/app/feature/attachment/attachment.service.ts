@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
 import {
   BaseService,
@@ -17,9 +17,11 @@ import {
 } from '@shared/utils';
 import { CreateAttachmentInput } from '@feature/attachment/dto/create-attachment.input';
 import { AttachmentResizeService } from '@feature/attachment/attachment-resize.service';
+import { CreateFileDto } from '@feature/file/dto/create-file.dto';
 
 @Injectable()
 export class AttachmentService extends BaseService<AttachmentEntity> {
+  private readonly logger: Logger = new Logger(this.constructor.name);
   constructor(
     @Inject(AttachmentConnection)
     protected repository: DBConnection<AttachmentEntity>,
@@ -35,6 +37,8 @@ export class AttachmentService extends BaseService<AttachmentEntity> {
     createAttachmentInput: CreateAttachmentInput,
     runner: IDBTransactionRunner,
   ): Promise<AttachmentEntity> {
+    this.logger.log('Creating attachment', createAttachmentInput);
+
     const uploadProcess = await this.uploadLinkService.findOrFailBy({
       signedUrl: createAttachmentInput.signedUrl,
     });
@@ -54,18 +58,29 @@ export class AttachmentService extends BaseService<AttachmentEntity> {
       runner,
     );
 
+    this.logger.log('Attachment created', attachment);
+
     const originalFileMeta = await this.storageService.getFileMeta(
       uploadProcess.staticUrl,
     );
 
+    const createOriginalFileInput: CreateFileDto = {
+      url: uploadProcess.staticUrl,
+      attachment,
+      size: originalFileMeta.size,
+      type: FileType.Default,
+    };
+    this.logger.log('Creating original file', createOriginalFileInput);
+
     const originalFile = await this.fileService.create(
-      {
-        url: uploadProcess.staticUrl,
-        attachment,
-        size: originalFileMeta.size,
-        type: FileType.Default,
-      },
+      createOriginalFileInput,
       runner,
+    );
+
+    this.logger.log('Original file created', originalFile);
+
+    this.logger.log(
+      `Uploading resized images for attachment: ${attachment} with an extension: ${extension} and url:${uploadProcess.staticUrl}`,
     );
 
     const resizedFiles = await this.attachmentResizeService.uploadResizedImages(
@@ -77,7 +92,13 @@ export class AttachmentService extends BaseService<AttachmentEntity> {
 
     attachment.files = [originalFile, ...resizedFiles];
 
+    this.logger.log('Resized files', resizedFiles);
+
+    this.logger.log('Removing upload link', uploadProcess.id);
+
     await this.uploadLinkService.delete(uploadProcess.id, runner);
+
+    this.logger.log('Upload link removed', uploadProcess.id);
 
     return attachment;
   }
