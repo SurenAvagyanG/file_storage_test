@@ -40,10 +40,4 @@ export class UploadLinkService extends BaseService<UploadLinkEntity> {
     this.logger.log('Upload link created successfully ', uploadLink);
     return uploadLink;
   }
-
-  async findOrFailBy(
-    data: Partial<UploadLinkEntity>,
-  ): Promise<UploadLinkEntity> {
-    return this.repository.findOrFailBy(data);
-  }
 }
