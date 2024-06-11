@@ -52,7 +52,7 @@ describe('AttachmentResolver', () => {
     const extension = 'png';
     const name = 'test_image';
 
-    const uploadLink = await uploadLinkService.create({ extension });
+    const uploadLink = await uploadLinkService.createUploadLink({ extension });
 
     const input = {
       name: `${name}.${extension}`,
@@ -90,7 +90,7 @@ describe('AttachmentResolver', () => {
     const extension = 'png';
     const name = 'test_image';
 
-    const uploadLink = await uploadLinkService.create({ extension });
+    const uploadLink = await uploadLinkService.createUploadLink({ extension });
 
     const input = {
       name: `${name}.${extension}`,
@@ -113,7 +113,7 @@ describe('AttachmentResolver', () => {
     const name = 'test_image';
     const newName = 'new_name.png';
 
-    const uploadLink = await uploadLinkService.create({ extension });
+    const uploadLink = await uploadLinkService.createUploadLink({ extension });
 
     const input = {
       name: `${name}.${extension}`,
@@ -134,7 +134,7 @@ describe('AttachmentResolver', () => {
     const extension = 'png';
     const name = 'test_image';
 
-    const uploadLink = await uploadLinkService.create({ extension });
+    const uploadLink = await uploadLinkService.createUploadLink({ extension });
 
     const input = {
       name: `${name}.${extension}`,
@@ -160,7 +160,7 @@ describe('AttachmentResolver', () => {
     const extension = 'png';
     const name = 'test_image';
 
-    const uploadLink = await uploadLinkService.create({ extension });
+    const uploadLink = await uploadLinkService.createUploadLink({ extension });
 
     const input = {
       name: `${name}.${extension}`,

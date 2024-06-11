@@ -130,14 +130,28 @@ export abstract class BaseTypeOrmRepository<T extends ObjectLiteral>
   async findOrFailBy(
     criteria: Criteria<T>,
     queryRunner?: QueryRunner,
+    options: FindOptionsWhere<T> = {},
   ): Promise<T> {
-    const item = await this.findBy(criteria, {}, queryRunner);
+    const item = await this.findBy(criteria, options, queryRunner);
 
     if (!item) {
       throw new NotFoundException('Entity not found');
     }
 
     return item;
+  }
+
+  async bulkDelete(
+    entities: string[],
+    queryRunner?: QueryRunner,
+  ): Promise<boolean> {
+    const repo = queryRunner
+      ? queryRunner.manager.getRepository(this.entityClass)
+      : this.repository;
+
+    const result = await repo.delete(entities);
+
+    return Boolean(result.affected);
   }
 
   async updateWithTransaction(
