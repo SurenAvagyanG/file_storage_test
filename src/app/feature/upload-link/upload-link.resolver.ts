@@ -21,7 +21,10 @@ export class UploadLinkResolver {
     @Args('createUploadLink') createUploadLinkInput: CreateUploadLinkInput,
   ): Promise<UploadLinkEntity> {
     return this.transactionService.run((runner) => {
-      return this.uploadLinkService.create(createUploadLinkInput, runner);
+      return this.uploadLinkService.createUploadLink(
+        createUploadLinkInput,
+        runner,
+      );
     });
   }
 }

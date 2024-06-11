@@ -1,6 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
-import { DBConnection, IDBTransactionRunner } from '@infrastructure/common';
+import {
+  BaseService,
+  DBConnection,
+  IDBTransactionRunner,
+} from '@infrastructure/common';
 import { StorageService } from '@shared/storage';
 import { UploadLinkService } from '@feature/upload-link/upload-link.service';
 import { FileService } from '@feature/file/file.service';
@@ -12,21 +16,22 @@ import {
   getFileName,
 } from '@shared/utils';
 import { CreateAttachmentInput } from '@feature/attachment/dto/create-attachment.input';
-import { UpdateAttachmentInput } from '@feature/attachment/dto/update-attachment.input';
 import { AttachmentResizeService } from '@feature/attachment/attachment-resize.service';
 
 @Injectable()
-export class AttachmentService {
+export class AttachmentService extends BaseService<AttachmentEntity> {
   constructor(
     @Inject(AttachmentConnection)
-    private repository: DBConnection<AttachmentEntity>,
+    protected repository: DBConnection<AttachmentEntity>,
     private storageService: StorageService,
     private uploadLinkService: UploadLinkService,
     private fileService: FileService,
     private attachmentResizeService: AttachmentResizeService,
-  ) {}
+  ) {
+    super(repository);
+  }
 
-  async create(
+  async createAttachment(
     createAttachmentInput: CreateAttachmentInput,
     runner: IDBTransactionRunner,
   ): Promise<AttachmentEntity> {
@@ -36,7 +41,7 @@ export class AttachmentService {
 
     const extension = getFileExtension(createAttachmentInput.name);
 
-    const attachment = await this.repository.createWithTransaction(
+    const attachment = await this.create(
       {
         name: getFileName(createAttachmentInput.name),
         type: getAttachmentType(createAttachmentInput.name),
@@ -72,28 +77,8 @@ export class AttachmentService {
 
     attachment.files = [originalFile, ...resizedFiles];
 
-    await this.uploadLinkService.remove(uploadProcess.id, runner);
+    await this.uploadLinkService.delete(uploadProcess.id, runner);
 
     return attachment;
-  }
-
-  async getById(id: string): Promise<AttachmentEntity> {
-    return await this.repository.findOrFailBy({ id });
-  }
-
-  async getByIds(ids: string[]): Promise<AttachmentEntity[]> {
-    return this.repository.findManyBy({ id: ids });
-  }
-
-  async updateById(
-    id: string,
-    updateAttachmentInput: UpdateAttachmentInput,
-  ): Promise<AttachmentEntity> {
-    await this.repository.updateWithTransaction(id, updateAttachmentInput);
-    return this.getById(id);
-  }
-
-  async removeById(id: string): Promise<boolean> {
-    return await this.repository.removeWithTransaction(id);
   }
 }

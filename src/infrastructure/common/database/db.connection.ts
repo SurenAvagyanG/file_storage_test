@@ -19,6 +19,11 @@ export interface DBConnection<T> {
     queryRunner?: IDBTransactionRunner,
   ): Promise<T[]>;
 
+  bulkDelete(
+    entities: string[],
+    queryRunner?: IDBTransactionRunner,
+  ): Promise<boolean>;
+
   removeWithTransaction(
     entityId: string,
     queryRunner?: IDBTransactionRunner,
@@ -43,8 +48,9 @@ export interface DBConnection<T> {
   ): Promise<T | null>;
 
   findOrFailBy(
-    data: Partial<T>,
+    data: Criteria<T>,
     queryRunner?: IDBTransactionRunner,
+    options?: CustomFindOptions<T>,
   ): Promise<T>;
 
   updateWithTransaction(
