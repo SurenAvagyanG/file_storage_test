@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
 import { DBConnection, IDBTransactionRunner } from '@infrastructure/common';
 import { StorageService } from '@shared/storage';
@@ -14,9 +14,12 @@ import {
 import { CreateAttachmentInput } from '@feature/attachment/dto/create-attachment.input';
 import { UpdateAttachmentInput } from '@feature/attachment/dto/update-attachment.input';
 import { AttachmentResizeService } from '@feature/attachment/attachment-resize.service';
+import { CreateFileDto } from '@feature/file/dto/create-file.dto';
 
 @Injectable()
 export class AttachmentService {
+  private readonly logger: Logger = new Logger(this.constructor.name);
+
   constructor(
     @Inject(AttachmentConnection)
     private repository: DBConnection<AttachmentEntity>,
@@ -30,6 +33,8 @@ export class AttachmentService {
     createAttachmentInput: CreateAttachmentInput,
     runner: IDBTransactionRunner,
   ): Promise<AttachmentEntity> {
+    this.logger.log('Creating attachment', createAttachmentInput);
+
     const uploadProcess = await this.uploadLinkService.findOrFailBy({
       signedUrl: createAttachmentInput.signedUrl,
     });
@@ -49,18 +54,29 @@ export class AttachmentService {
       runner,
     );
 
+    this.logger.log('Attachment created', attachment);
+
     const originalFileMeta = await this.storageService.getFileMeta(
       uploadProcess.staticUrl,
     );
 
+    const createOriginalFileInput: CreateFileDto = {
+      url: uploadProcess.staticUrl,
+      attachment,
+      size: originalFileMeta.size,
+      type: FileType.Default,
+    };
+    this.logger.log('Creating original file', createOriginalFileInput);
+
     const originalFile = await this.fileService.create(
-      {
-        url: uploadProcess.staticUrl,
-        attachment,
-        size: originalFileMeta.size,
-        type: FileType.Default,
-      },
+      createOriginalFileInput,
       runner,
+    );
+
+    this.logger.log('Original file created', originalFile);
+
+    this.logger.log(
+      `Uploading resized images for attachment: ${attachment} with an extension: ${extension} and url:${uploadProcess.staticUrl}`,
     );
 
     const resizedFiles = await this.attachmentResizeService.uploadResizedImages(
@@ -72,16 +88,26 @@ export class AttachmentService {
 
     attachment.files = [originalFile, ...resizedFiles];
 
+    this.logger.log('Resized files', resizedFiles);
+
+    this.logger.log('Removing upload link', uploadProcess.id);
+
     await this.uploadLinkService.remove(uploadProcess.id, runner);
+
+    this.logger.log('Upload link removed', uploadProcess.id);
 
     return attachment;
   }
 
   async getById(id: string): Promise<AttachmentEntity> {
+    this.logger.log('Getting an attachment with id', id);
+
     return await this.repository.findOrFailBy({ id });
   }
 
   async getByIds(ids: string[]): Promise<AttachmentEntity[]> {
+    this.logger.log('Getting attachments with ids', ids);
+
     return this.repository.findManyBy({ id: ids });
   }
 
@@ -89,11 +115,18 @@ export class AttachmentService {
     id: string,
     updateAttachmentInput: UpdateAttachmentInput,
   ): Promise<AttachmentEntity> {
+    this.logger.log('Updating attachment', id);
+
     await this.repository.updateWithTransaction(id, updateAttachmentInput);
+    this.logger.log('Attachment successfully updated', id);
+
     return this.getById(id);
   }
 
   async removeById(id: string): Promise<boolean> {
-    return await this.repository.removeWithTransaction(id);
+    this.logger.log('Removing attachment', id);
+    const removedAttachment = await this.repository.removeWithTransaction(id);
+    this.logger.log('Attachment successfully removed', id);
+    return removedAttachment;
   }
 }
