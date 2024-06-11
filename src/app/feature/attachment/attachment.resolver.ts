@@ -22,7 +22,10 @@ export class AttachmentResolver {
     @Args('createAttachmentInput') createAttachmentInput: CreateAttachmentInput,
   ): Promise<AttachmentEntity> {
     return this.transactionService.run(async (runner) => {
-      return await this.attachmentService.create(createAttachmentInput, runner);
+      return await this.attachmentService.createAttachment(
+        createAttachmentInput,
+        runner,
+      );
     });
   }
 
@@ -30,14 +33,14 @@ export class AttachmentResolver {
   getAttachmentById(
     @Args('id', { type: () => ID }) id: string,
   ): Promise<AttachmentEntity> {
-    return this.attachmentService.getById(id);
+    return this.attachmentService.findOrFailBy({ id });
   }
 
   @Query(() => [AttachmentEntity])
   getAttachmentsByIds(
     @Args('ids', { type: () => [ID] }) ids: string[],
   ): Promise<AttachmentEntity[]> {
-    return this.attachmentService.getByIds(ids);
+    return this.attachmentService.findAll({ id: ids });
   }
 
   @Mutation(() => AttachmentEntity)
@@ -45,12 +48,12 @@ export class AttachmentResolver {
     @Args('id', { type: () => ID }) id: string,
     @Args('updateAttachmentInput') updateAttachmentInput: UpdateAttachmentInput,
   ): Promise<AttachmentEntity> {
-    return this.attachmentService.updateById(id, updateAttachmentInput);
+    return this.attachmentService.update(id, updateAttachmentInput);
   }
   @Mutation(() => Boolean)
   removeAttachment(
     @Args('id', { type: () => ID }) id: string,
-  ): Promise<boolean> {
-    return this.attachmentService.removeById(id);
+  ): Promise<AttachmentEntity> {
+    return this.attachmentService.delete(id);
   }
 }

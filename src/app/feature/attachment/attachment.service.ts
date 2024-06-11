@@ -1,6 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
-import { DBConnection, IDBTransactionRunner } from '@infrastructure/common';
+import {
+  BaseService,
+  DBConnection,
+  IDBTransactionRunner,
+} from '@infrastructure/common';
 import { StorageService } from '@shared/storage';
 import { UploadLinkService } from '@feature/upload-link/upload-link.service';
 import { FileService } from '@feature/file/file.service';
@@ -12,24 +16,24 @@ import {
   getFileName,
 } from '@shared/utils';
 import { CreateAttachmentInput } from '@feature/attachment/dto/create-attachment.input';
-import { UpdateAttachmentInput } from '@feature/attachment/dto/update-attachment.input';
 import { AttachmentResizeService } from '@feature/attachment/attachment-resize.service';
 import { CreateFileDto } from '@feature/file/dto/create-file.dto';
 
 @Injectable()
-export class AttachmentService {
+export class AttachmentService extends BaseService<AttachmentEntity> {
   private readonly logger: Logger = new Logger(this.constructor.name);
-
   constructor(
     @Inject(AttachmentConnection)
-    private repository: DBConnection<AttachmentEntity>,
+    protected repository: DBConnection<AttachmentEntity>,
     private storageService: StorageService,
     private uploadLinkService: UploadLinkService,
     private fileService: FileService,
     private attachmentResizeService: AttachmentResizeService,
-  ) {}
+  ) {
+    super(repository);
+  }
 
-  async create(
+  async createAttachment(
     createAttachmentInput: CreateAttachmentInput,
     runner: IDBTransactionRunner,
   ): Promise<AttachmentEntity> {
@@ -41,7 +45,7 @@ export class AttachmentService {
 
     const extension = getFileExtension(createAttachmentInput.name);
 
-    const attachment = await this.repository.createWithTransaction(
+    const attachment = await this.create(
       {
         name: getFileName(createAttachmentInput.name),
         type: getAttachmentType(createAttachmentInput.name),
@@ -92,7 +96,7 @@ export class AttachmentService {
 
     this.logger.log('Removing upload link', uploadProcess.id);
 
-    await this.uploadLinkService.remove(uploadProcess.id, runner);
+    await this.uploadLinkService.delete(uploadProcess.id, runner);
 
     this.logger.log('Upload link removed', uploadProcess.id);
 

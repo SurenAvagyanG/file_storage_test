@@ -1,0 +1,67 @@
+image: node:20
+
+pipelines:
+  default:
+    - step:
+        name: Run ESLint
+        caches:
+          - node
+        script:
+          - yarn install
+          - yarn lint
+
+    - step:
+        name: Run Prettier Check
+        caches:
+          - node
+        script:
+          - yarn install
+          - yarn prettier
+
+    - step:
+        name: Run Tests
+        caches:
+          - node
+        services:
+          - postgres
+        script:
+          - echo "APP_ENVIRONMENT=local" > .env
+          - echo "DB_PASSWORD=postgres" >> .env
+          - echo "DB_USERNAME=postgres" >> .env
+          - yarn install
+          - yarn build
+          - yarn test
+
+  branches:
+    develop:
+      - step:
+          name: Increment Package Version
+          image: node:20
+          caches:
+            - node
+          script:
+            - echo "Setting up Git user..."
+            - git config --global user.email "suren.avagyan@experianto.com"
+            - git config --global user.name "SurenAvagyanXP"
+            - echo "Installing dependencies..."
+            - yarn install
+            - echo "Incrementing package version..."
+            - yarn version --patch --no-git-tag-version
+            - echo "Pushing changes..."
+            - git commit -am "Incremented package version"
+            - git push https://x-token-auth:${{ secrets.PAT }}@bitbucket.org/your-username/your-repo.git
+
+definitions:
+  services:
+    postgres:
+      image: postgres
+      environment:
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: file_storage
+      healthcheck:
+        test: ['CMD-SHELL', 'pg_isready -U postgres']
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      ports:
+        - '5432:5432'

@@ -1,21 +1,26 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { StorageService } from '@shared/storage';
 import { UploadLinkEntity } from '@feature/upload-link/entity/upload-link.entity';
-import { DBConnection, IDBTransactionRunner } from '@infrastructure/common';
+import {
+  BaseService,
+  DBConnection,
+  IDBTransactionRunner,
+} from '@infrastructure/common';
 import { UploadLinkConnection } from '@feature/upload-link/constants/tokens.const';
 import { CreateUploadLinkInput } from '@feature/upload-link/dto/create-upload-link.input';
 
 @Injectable()
-export class UploadLinkService {
+export class UploadLinkService extends BaseService<UploadLinkEntity> {
   private readonly logger: Logger = new Logger(this.constructor.name);
-
   constructor(
     private storageService: StorageService,
     @Inject(UploadLinkConnection)
-    private repository: DBConnection<UploadLinkEntity>,
-  ) {}
+    protected repository: DBConnection<UploadLinkEntity>,
+  ) {
+    super(repository);
+  }
 
-  async create(
+  async createUploadLink(
     createUploadLinkInput: CreateUploadLinkInput,
     runner?: IDBTransactionRunner,
   ): Promise<UploadLinkEntity> {
@@ -44,5 +49,6 @@ export class UploadLinkService {
 
   async remove(id: string, runner?: IDBTransactionRunner): Promise<void> {
     await this.repository.removeWithTransaction(id, runner);
+    return this.create(data, runner);
   }
 }
