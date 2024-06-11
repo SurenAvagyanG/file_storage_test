@@ -102,35 +102,4 @@ export class AttachmentService extends BaseService<AttachmentEntity> {
 
     return attachment;
   }
-
-  async getById(id: string): Promise<AttachmentEntity> {
-    this.logger.log('Getting an attachment with id', id);
-
-    return await this.repository.findOrFailBy({ id });
-  }
-
-  async getByIds(ids: string[]): Promise<AttachmentEntity[]> {
-    this.logger.log('Getting attachments with ids', ids);
-
-    return this.repository.findManyBy({ id: ids });
-  }
-
-  async updateById(
-    id: string,
-    updateAttachmentInput: UpdateAttachmentInput,
-  ): Promise<AttachmentEntity> {
-    this.logger.log('Updating attachment', id);
-
-    await this.repository.updateWithTransaction(id, updateAttachmentInput);
-    this.logger.log('Attachment successfully updated', id);
-
-    return this.getById(id);
-  }
-
-  async removeById(id: string): Promise<boolean> {
-    this.logger.log('Removing attachment', id);
-    const removedAttachment = await this.repository.removeWithTransaction(id);
-    this.logger.log('Attachment successfully removed', id);
-    return removedAttachment;
-  }
 }

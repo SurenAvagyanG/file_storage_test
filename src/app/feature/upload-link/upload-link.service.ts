@@ -46,9 +46,4 @@ export class UploadLinkService extends BaseService<UploadLinkEntity> {
   ): Promise<UploadLinkEntity> {
     return this.repository.findOrFailBy(data);
   }
-
-  async remove(id: string, runner?: IDBTransactionRunner): Promise<void> {
-    await this.repository.removeWithTransaction(id, runner);
-    return this.create(data, runner);
-  }
 }
