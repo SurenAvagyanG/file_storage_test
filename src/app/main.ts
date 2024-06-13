@@ -1,13 +1,13 @@
 import 'dotenv/config';
 
 // @TODO find nice way to import tracer
-import '@infrastructure/common/logger/tracer';
+import 'expiaa-common/dist/logger/tracer';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { StorageFactory, S3Adapter } from '@infrastructure/storage';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { LoggerService } from '@infrastructure/common';
+import { LoggerService } from 'expiaa-common';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);

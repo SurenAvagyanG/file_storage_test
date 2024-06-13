@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MainModule } from '@feature/main/main.module';
 import { appConfig } from '@config/app.config';
 import { dbConfig } from '@config/db.config';
-import { LoggerModule } from '@infrastructure/common';
+import { LoggerModule } from 'expiaa-common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AttachmentModule } from '@feature/attachment/attachment.module';
 import { fileSystemConfig } from '@config/file-system.config';

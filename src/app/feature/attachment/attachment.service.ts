@@ -1,10 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
-import {
-  BaseService,
-  DBConnection,
-  IDBTransactionRunner,
-} from '@infrastructure/common';
+import { BaseService, DBConnection, IDBTransactionRunner } from 'expiaa-common';
 import { StorageService } from '@shared/storage';
 import { UploadLinkService } from '@feature/upload-link/upload-link.service';
 import { FileService } from '@feature/file/file.service';

@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { StorageService } from '@shared/storage';
 import { FileEntity } from '@feature/file/entities/file.entity';
-import { BaseService, DBConnection } from '@infrastructure/common';
+import { BaseService, DBConnection } from 'expiaa-common';
 import { FileConnection } from '@feature/file/constants/tokens.const';
 
 @Injectable()
