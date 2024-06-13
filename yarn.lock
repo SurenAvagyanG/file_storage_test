@@ -3522,10 +3522,10 @@ expect@^29.0.0, expect@^29.7.0:
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
 
-expiaa-common@^1.0.36:
-  version "1.0.36"
-  resolved "https://registry.yarnpkg.com/expiaa-common/-/expiaa-common-1.0.36.tgz#ea7fd47857ebe3bcbf088bc2cde3308decadaacb"
-  integrity sha512-Vy9YCKr+ryw0aK5rxVeI5+EHomi0ZKTaGutis/n03xNEpMYgvKubfxBCcZIREX1sV40wmKXLOyLxV7X1ow7MFQ==
+expiaa-common@^1.0.42:
+  version "1.0.42"
+  resolved "https://registry.yarnpkg.com/expiaa-common/-/expiaa-common-1.0.42.tgz#b64bd16d1b6d31625aa7db4679b10aee4584ae02"
+  integrity sha512-yF5eta31DaUZoC2/wl+/R5KL482+ToFb4XhYhDL1+O38g8CESuS9Kf6gReiHQGFbEOOgwvdqpABRmHUn8Lq1iQ==
   dependencies:
     "@faker-js/faker" "^8.4.1"
     "@nestjs/common" "^10.3.9"
