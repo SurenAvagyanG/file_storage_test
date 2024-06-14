@@ -1,7 +1,11 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { StorageService } from '@shared/storage';
 import { UploadLinkEntity } from '@feature/upload-link/entity/upload-link.entity';
-import { BaseService, DBConnection, IDBTransactionRunner } from 'expiaa-common';
+import {
+  BaseService,
+  DBConnection,
+  IDBTransactionRunner,
+} from '@fifth/expia-common';
 import { UploadLinkConnection } from '@feature/upload-link/constants/tokens.const';
 import { CreateUploadLinkInput } from '@feature/upload-link/dto/create-upload-link.input';
 

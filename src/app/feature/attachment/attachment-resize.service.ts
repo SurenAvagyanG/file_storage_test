@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
-import { IDBTransactionRunner, generateRandomStr } from 'expiaa-common';
+import { IDBTransactionRunner, generateRandomStr } from '@fifth/expia-common';
 import { StorageService } from '@shared/storage';
 import { FileService } from '@feature/file/file.service';
 import { FileType } from '@domain/constants';

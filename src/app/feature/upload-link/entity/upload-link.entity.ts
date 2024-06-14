@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { CommonEntity } from 'expiaa-common';
+import { CommonEntity } from '@fifth/expia-common';
 
 @ObjectType()
 @Entity()

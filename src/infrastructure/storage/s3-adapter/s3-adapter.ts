@@ -7,7 +7,7 @@ import {
   FileMeta,
 } from '../storage.interface';
 import { S3Credentials } from './s3-credentials';
-import { generateRandomStr } from 'expiaa-common';
+import { generateRandomStr } from '@fifth/expia-common';
 import { Logger } from '@nestjs/common';
 import { capitalizeParams, getFileExtension } from '@shared/utils';
 

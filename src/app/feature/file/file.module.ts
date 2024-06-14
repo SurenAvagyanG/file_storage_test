@@ -5,7 +5,7 @@ import { FileEntity } from '@feature/file/entities/file.entity';
 import { FileRepository } from '@feature/file/entities/file.repository';
 import { FileConnection } from '@feature/file/constants/tokens.const';
 import { FileResolver } from '@feature/file/file.resolver';
-import { DatabaseModule } from 'expiaa-common';
+import { DatabaseModule } from '@fifth/expia-common';
 
 @Module({
   imports: [DatabaseModule.forFeature([FileEntity]), StorageModule],

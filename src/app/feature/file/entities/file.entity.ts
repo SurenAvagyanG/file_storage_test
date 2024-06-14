@@ -2,7 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { FileType } from '@domain/constants';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
 import { Field, ObjectType } from '@nestjs/graphql';
-import { CommonEntity } from 'expiaa-common';
+import { CommonEntity } from '@fifth/expia-common';
 
 @ObjectType()
 @Entity()

@@ -4,7 +4,10 @@ import { AttachmentService } from '@feature/attachment/attachment.service';
 import { CreateAttachmentInput } from '@feature/attachment/dto/create-attachment.input';
 import { UpdateAttachmentInput } from '@feature/attachment/dto/update-attachment.input';
 import { Inject } from '@nestjs/common';
-import { DBTransactionService, IDBTransactionService } from 'expiaa-common';
+import {
+  DBTransactionService,
+  IDBTransactionService,
+} from '@fifth/expia-common';
 
 @Resolver(() => AttachmentEntity)
 export class AttachmentResolver {

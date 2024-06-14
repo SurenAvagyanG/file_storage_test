@@ -2,7 +2,7 @@ import { Repository } from 'typeorm';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
-import { BaseTypeOrmRepository } from 'expiaa-common';
+import { BaseTypeOrmRepository } from '@fifth/expia-common';
 
 @Injectable()
 export class AttachmentRepository extends BaseTypeOrmRepository<AttachmentEntity> {

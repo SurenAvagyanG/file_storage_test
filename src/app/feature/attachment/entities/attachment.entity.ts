@@ -2,7 +2,7 @@ import { ObjectType, Field } from '@nestjs/graphql';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { FileEntity } from '@feature/file/entities/file.entity';
 import { AttachmentType } from '@domain/constants';
-import { CommonEntity } from 'expiaa-common';
+import { CommonEntity } from '@fifth/expia-common';
 
 @Entity()
 @ObjectType()

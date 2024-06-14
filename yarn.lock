@@ -612,6 +612,31 @@
   resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-8.4.1.tgz#5d5e8aee8fce48f5e189bf730ebd1f758f491451"
   integrity sha512-XQ3cU+Q8Uqmrbf2e0cIC/QN43sTBSC8KF12u29Mb47tWrt2hAgBXSgpZMj4Ao8Uk0iJcU99QsOCaIL8934obCg==
 
+"@fifth/expia-common@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@fifth/expia-common/-/expia-common-1.0.3.tgz#aad5b31af890591a511fc21250f21c16b546a247"
+  integrity sha512-AgpVuIt38d9vd9h//zHUUbG2L4LxKraW9AkwOpsiAS/kjg4bNfzwKpz7U37TBLFiz/9WnVCH24bmaq4KmHvrdQ==
+  dependencies:
+    "@faker-js/faker" "^8.4.1"
+    "@nestjs/common" "^10.3.9"
+    "@nestjs/config" "^3.2.2"
+    "@nestjs/core" "^10.3.9"
+    "@nestjs/graphql" "^12.1.1"
+    "@nestjs/microservices" "^10.3.9"
+    "@nestjs/typeorm" "^10.0.2"
+    axios "^1.7.2"
+    bcrypt "^5.1.1"
+    class-validator "^0.14.1"
+    dataloader "^2.2.2"
+    dd-trace "^5.17.0"
+    express "^4.19.2"
+    graphql "^16.8.1"
+    graphql-request "^6.1.0"
+    nestjs-i18n "^10.4.5"
+    rxjs "^7.8.1"
+    typeorm "^0.3.20"
+    winston "^3.13.0"
+
 "@graphql-tools/merge@9.0.1":
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/@graphql-tools/merge/-/merge-9.0.1.tgz#693f15da152339284469b1ce5c6827e3ae350a29"
@@ -1973,14 +1998,16 @@ acorn-jsx@^5.3.2:
   integrity sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==
 
 acorn-walk@^8.1.1:
-  version "8.3.2"
-  resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.3.2.tgz#7703af9415f1b6db9315d6895503862e231d34aa"
-  integrity sha512-cjkyv4OtNCIeqhHrfS81QWXoCBPExR/J62oyEqepVw8WaQeSqpW2uhuLPh1m9eWhDuOo/jUXVTlifvesOWp/4A==
+  version "8.3.3"
+  resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.3.3.tgz#9caeac29eefaa0c41e3d4c65137de4d6f34df43e"
+  integrity sha512-MxXdReSRhGO7VlFe1bRG/oI7/mdLV9B9JJT0N8vZOhF7gFRR5l3M8W9G8JxmKV+JC5mGqJ0QvqfSOLsCPa4nUw==
+  dependencies:
+    acorn "^8.11.0"
 
-acorn@^8.4.1, acorn@^8.7.1, acorn@^8.8.2, acorn@^8.9.0:
-  version "8.11.3"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.11.3.tgz#71e0b14e13a4ec160724b38fb7b0f233b1b81d7a"
-  integrity sha512-Y9rRfJG5jcKOE0CLisYbojUjIrIEE7AGMzA/Sm4BslANhbS+cDMpgBdcPT91oJ7OuJ9hYJBx59RjbhxVnrF8Xg==
+acorn@^8.11.0, acorn@^8.4.1, acorn@^8.7.1, acorn@^8.8.2, acorn@^8.9.0:
+  version "8.12.0"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.12.0.tgz#1627bfa2e058148036133b8d9b51a700663c294c"
+  integrity sha512-RTvkC4w+KNXrM39/lWCUaG0IbRkWdCv7W/IOW9oU6SawyxulvkQy5HQPVTKxEjczcUvapcrw3cFx/60VN/NRNw==
 
 agent-base@6:
   version "6.0.2"
@@ -2241,9 +2268,9 @@ available-typed-arrays@^1.0.7:
     possible-typed-array-names "^1.0.0"
 
 aws-sdk@^2.1585.0:
-  version "2.1640.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1640.0.tgz#ef7fe7c6060c8c98d28c48245197a8349fd90c18"
-  integrity sha512-B4ipyAKMPjTMWyVG4wx57V9Ws9anAGTCtR6jTGfIA6wSjrMNeNVohwROe4E4CZDcNiWBPhZjNus/9uupdsW8vg==
+  version "2.1641.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1641.0.tgz#fc515dfb1cef3106a5ce90d370016442483b8d0a"
+  integrity sha512-XkKbVu4VKFjY7wsTSWEYxBR2fVN8gUovAvRrHuJt9mMDdDh/wPkBZ04ayGT+Bd5bgmmIeE3sk3UMokKQEudJEQ==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -2495,9 +2522,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001629:
-  version "1.0.30001633"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001633.tgz#45a4ade9fb9ec80a06537a6271ac1e0afadcb324"
-  integrity sha512-6sT0yf/z5jqf8tISAgpJDrmwOpLsrpnyCdD/lOZKvKkkJK4Dn0X5i7KF7THEZhOq+30bmhwBlNEaqPUiHiKtZg==
+  version "1.0.30001634"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001634.tgz#aa563c8e7aeaf552f7ead60371bc8d803425deaa"
+  integrity sha512-fbBYXQ9q3+yp1q1gBk86tOFs4pyn/yxFm5ZNP18OXJDfA3txImOY9PhfxVggZ4vRHDqoU8NrKU81eN0OtzOgRA==
 
 chalk@4.1.2, chalk@^4.0.0, chalk@^4.1.0, chalk@^4.1.1, chalk@^4.1.2:
   version "4.1.2"
@@ -3521,31 +3548,6 @@ expect@^29.0.0, expect@^29.7.0:
     jest-matcher-utils "^29.7.0"
     jest-message-util "^29.7.0"
     jest-util "^29.7.0"
-
-expiaa-common@^1.0.42:
-  version "1.0.42"
-  resolved "https://registry.yarnpkg.com/expiaa-common/-/expiaa-common-1.0.42.tgz#b64bd16d1b6d31625aa7db4679b10aee4584ae02"
-  integrity sha512-yF5eta31DaUZoC2/wl+/R5KL482+ToFb4XhYhDL1+O38g8CESuS9Kf6gReiHQGFbEOOgwvdqpABRmHUn8Lq1iQ==
-  dependencies:
-    "@faker-js/faker" "^8.4.1"
-    "@nestjs/common" "^10.3.9"
-    "@nestjs/config" "^3.2.2"
-    "@nestjs/core" "^10.3.9"
-    "@nestjs/graphql" "^12.1.1"
-    "@nestjs/microservices" "^10.3.9"
-    "@nestjs/typeorm" "^10.0.2"
-    axios "^1.7.2"
-    bcrypt "^5.1.1"
-    class-validator "^0.14.1"
-    dataloader "^2.2.2"
-    dd-trace "^5.17.0"
-    express "^4.19.2"
-    graphql "^16.8.1"
-    graphql-request "^6.1.0"
-    nestjs-i18n "^10.4.5"
-    rxjs "^7.8.1"
-    typeorm "^0.3.20"
-    winston "^3.13.0"
 
 express@4.19.2, express@^4.17.1, express@^4.19.2:
   version "4.19.2"
