@@ -28,6 +28,7 @@ pipelines:
           - echo "APP_ENVIRONMENT=local" > .env
           - echo "DB_PASSWORD=postgres" >> .env
           - echo "DB_USERNAME=postgres" >> .env
+          - echo "FS_DRIVER=s3" >> .env
           - yarn install
           - yarn add sharp --ignore-engines
           - yarn build
