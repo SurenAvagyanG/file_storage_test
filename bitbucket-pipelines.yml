@@ -34,19 +34,8 @@ pipelines:
           - yarn build
           - yarn test
 
-  pull-requests:
-    "**":
-      - step:
-          name: Check for Merge
-          image: node:20
-          caches:
-            - node
-          script:
-            - git fetch --tags
-            - if [ "$BITBUCKET_PR_DESTINATION_BRANCH" == "develop" ]; then echo "Merged into develop"; else echo "Not merged into develop"; exit 0; fi
-            - echo "Checking for version increment"
-            - if git rev-parse "version-incremented" >/dev/null 2>&1; then echo "Version already incremented"; exit 1; else echo "Version not incremented yet"; fi
-
+  branches:
+    develop:
       - step:
           name: Increment Package Version
           image: node:20
@@ -56,12 +45,15 @@ pipelines:
             - git config --global user.email "suren@fifth-llc.com"
             - git config --global user.name "SurenAvagyanG"
             - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
-            - yarn install
-            - yarn add sharp --ignore-engines
-            - yarn version --patch --no-git-tag-version
-            - git add package.json
-            - git commit -am "Incremented package version"
-            - git push
+            - git fetch origin develop
+            - if git log -1 --pretty=%B | grep -q "[INCREMENT_VERSION]"; then echo "Version already incremented"; else
+                yarn install &&
+                yarn add sharp --ignore-engines &&
+                yarn version --patch --no-git-tag-version &&
+                git add package.json &&
+                git commit -m "[INCREMENT_VERSION] Incremented package version" &&
+                git push;
+              fi
 
 definitions:
   services:
