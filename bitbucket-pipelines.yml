@@ -42,37 +42,22 @@ pipelines:
           caches:
             - node
           script:
-            - git config --global user.email "suren@fifth-llc.com"
-            - git config --global user.name "SurenAvagyanG"
-            - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
-            - yarn install
-            - yarn add sharp --ignore-engines
             - yarn version --patch --no-git-tag-version
             - git add package.json
-            - git commit -m "Incremented package version"
+            - git commit -am "Incremented package version"
             - git push
 
-  pull-requests:
-    '**':
-      - step:
-          name: Check PR
-          caches:
-            - node
-          script:
-            - yarn install --ignore-engines
-            - yarn lint
-            - yarn prettier
-            - yarn test
-
-    develop:
-      - step:
-          name: Increment Package Version
-          image: node:20
-          caches:
-            - node
-          script:
-            - git config --global user.email "suren@fifth-llc.com"
-            - git config --global user.name "SurenAvagyanG"
-            - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
-            - yarn instal
-            - yarn add sharp --ignore-engines
+definitions:
+  services:
+    postgres:
+      image: postgres
+      environment:
+        POSTGRES_PASSWORD: postgres
+        POSTGRES_DB: file_storage
+      healthcheck:
+        test: ['CMD-SHELL', 'pg_isready -U postgres']
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      ports:
+        - '5432:5432'
