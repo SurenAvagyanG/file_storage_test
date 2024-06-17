@@ -37,7 +37,7 @@ pipelines:
   branches:
     develop:
       - step:
-          name: Increment Package Version
+          name: Increment Version
           image: node:20
           caches:
             - node
@@ -45,15 +45,11 @@ pipelines:
             - git config --global user.email "suren@fifth-llc.com"
             - git config --global user.name "SurenAvagyanG"
             - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
-            - git fetch origin develop
-            - if git log -1 --pretty=%B | grep -q "[INCREMENT_VERSION]"; then echo "Version increment"; else
-                yarn install &&
-                yarn add sharp --ignore-engines &&
-                yarn version --patch --no-git-tag-version &&
-                git add package.json &&
-                git commit -m "[INCREMENT_VERSION] Incremented package version" &&
-                git push;
-              fi
+            - yarn install
+            - yarn version --patch --no-git-tag-version
+            - git add package.json
+            - git commit -m "Incremented package version [skip ci]"
+            - git push origin develop
 
 definitions:
   services:
