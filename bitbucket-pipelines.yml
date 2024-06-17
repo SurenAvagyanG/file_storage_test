@@ -34,14 +34,14 @@ pipelines:
           - yarn build
           - yarn test
 
-  pull-requests:
-    "**":
+  branches:
+    develop:
       - step:
-          name: Check Merge and Increment Version
+          name: Increment Package Version
           caches:
             - node
           script:
-            - if [ "${BITBUCKET_BRANCH}" == "develop" ]; then
+            - git log -1 --pretty=%B | grep -q "Merge pull request" && (
                 git config --global user.email "suren@fifth-llc.com";
                 git config --global user.name "SurenAvagyanG";
                 git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git;
@@ -50,7 +50,7 @@ pipelines:
                 git add package.json;
                 git commit -m "Incremented package version";
                 git push;
-              fi
+              )
 
 definitions:
   services:
