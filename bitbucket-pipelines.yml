@@ -7,7 +7,7 @@ pipelines:
         caches:
           - node
         script:
-          - yarn install
+          - yarn install --ignore-engines
           - yarn lint
 
     - step:
@@ -15,7 +15,7 @@ pipelines:
         caches:
           - node
         script:
-          - yarn install
+          - yarn install --ignore-engines
           - yarn prettier
 
     - step:
@@ -28,7 +28,9 @@ pipelines:
           - echo "APP_ENVIRONMENT=local" > .env
           - echo "DB_PASSWORD=postgres" >> .env
           - echo "DB_USERNAME=postgres" >> .env
+          - echo "FS_DRIVER=s3" >> .env
           - yarn install
+          - yarn add sharp --ignore-engines
           - yarn build
           - yarn test
 
@@ -40,16 +42,15 @@ pipelines:
           caches:
             - node
           script:
-            - echo "Setting up Git user..."
-            - git config --global user.email "suren.avagyan@experianto.com"
-            - git config --global user.name "SurenAvagyanXP"
-            - echo "Installing dependencies..."
+            - git config --global user.email "suren@fifth-llc.com"
+            - git config --global user.name "SurenAvagyanG"
+            - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
             - yarn install
-            - echo "Incrementing package version..."
+            - yarn add sharp --ignore-engines
             - yarn version --patch --no-git-tag-version
-            - echo "Pushing changes..."
+            - git add package.json
             - git commit -am "Incremented package version"
-            - git push https://x-token-auth:${{ secrets.PAT }}@bitbucket.org/your-username/your-repo.git
+            - git push
 
 definitions:
   services:
