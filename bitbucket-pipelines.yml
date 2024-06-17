@@ -34,23 +34,23 @@ pipelines:
           - yarn build
           - yarn test
 
-  branches:
-    develop:
+  pull-requests:
+    "**":
       - step:
-          name: Increment Package Version
-          image: node:20
+          name: Check Merge and Increment Version
           caches:
             - node
           script:
-            - git config --global user.email "suren@fifth-llc.com"
-            - git config --global user.name "SurenAvagyanG"
-            - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
-            - yarn install
-            - yarn add sharp --ignore-engines
-            - yarn version --patch --no-git-tag-version
-            - git add package.json
-            - git commit -m "Incremented package version"
-            - git push
+            - if [ "${BITBUCKET_BRANCH}" == "develop" ]; then
+                git config --global user.email "suren@fifth-llc.com";
+                git config --global user.name "SurenAvagyanG";
+                git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git;
+                yarn install --ignore-engines;
+                yarn version --patch --no-git-tag-version;
+                git add package.json;
+                git commit -m "Incremented package version";
+                git push;
+              fi
 
 definitions:
   services:
