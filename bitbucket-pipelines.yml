@@ -46,7 +46,7 @@ pipelines:
             - git config --global user.name "SurenAvagyanG"
             - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
             - git fetch origin develop
-            - if git log -1 --pretty=%B | grep -q "[INCREMENT_VERSION]"; then echo "Version already incremented"; else
+            - if git log -1 --pretty=%B | grep -q "[INCREMENT_VERSION]"; then echo "Version incremented"; else
                 yarn install &&
                 yarn add sharp --ignore-engines &&
                 yarn version --patch --no-git-tag-version &&
