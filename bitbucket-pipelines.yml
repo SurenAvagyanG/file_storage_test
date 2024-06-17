@@ -41,16 +41,20 @@ pipelines:
           caches:
             - node
           script:
-            - git log -1 --pretty=%B | grep -q "Merge pull request" && (
-                git config --global user.email "suren@fifth-llc.com";
-                git config --global user.name "SurenAvagyanG";
-                git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git;
-                yarn install --ignore-engines;
-                yarn version --patch --no-git-tag-version;
-                git add package.json;
-                git commit -m "Incremented package version";
-                git push;
-              )
+            - |
+              MERGE_COMMIT=$(git log -1 --pretty=%B | grep -E '^Merge pull request')
+              if [ -n "$MERGE_COMMIT" ]; then
+                git config --global user.email "suren@fifth-llc.com"
+                git config --global user.name "SurenAvagyanG"
+                git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
+                yarn install --ignore-engines
+                yarn version --patch --no-git-tag-version
+                git add package.json
+                git commit -m "Incremented package version"
+                git push
+              else
+                echo "No merge commit found, skipping version increment."
+              fi
 
 definitions:
   services:
