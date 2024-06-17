@@ -38,22 +38,21 @@ pipelines:
     develop:
       - step:
           name: Increment Package Version
+          image: node:20
           caches:
             - node
           script:
-            - |
-              MERGE_COMMIT=$(git log -1 --pretty=%B | grep -E '^Merge pull request')
-              if [ -n "$MERGE_COMMIT" ]; then
-                git config --global user.email "suren@fifth-llc.com"
-                git config --global user.name "SurenAvagyanG"
-                git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
-                yarn install --ignore-engines
-                yarn version --patch --no-git-tag-version
-                git add package.json
-                git commit -m "Incremented package version"
-                git push
-              else
-                echo "No merge commit found, skipping version increment."
+            - git config --global user.email "suren@fifth-llc.com"
+            - git config --global user.name "SurenAvagyanG"
+            - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
+            - git fetch origin develop
+            - if git log -1 --pretty=%B | grep -q "[INCREMENT_VERSION]"; then echo "Version increment"; else
+                yarn install &&
+                yarn add sharp --ignore-engines &&
+                yarn version --patch --no-git-tag-version &&
+                git add package.json &&
+                git commit -m "[INCREMENT_VERSION] Incremented package version" &&
+                git push;
               fi
 
 definitions:
@@ -70,6 +69,3 @@ definitions:
         retries: 5
       ports:
         - '5432:5432'
-
-caches:
-  node: ~/.cache/yarn
