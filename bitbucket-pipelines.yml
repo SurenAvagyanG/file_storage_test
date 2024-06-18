@@ -1,16 +1,66 @@
 image: node:20
 
+pipelines:
+  default:
+    - step:
+        name: Run ESLint
+        caches:
+          - node
+        script:
+          - echo "//registry.yarnpkg.com/:_authToken=\${EXPIA_NPM_TOKEN}" > .npmrc
+          - npm config set @fifth:registry https://registry.yarnpkg.com/
+          - yarn install --ignore-engines
+          - yarn lint
+
+    - step:
+        name: Run Prettier Check
+        caches:
+          - node
+        script:
+          - echo "//registry.yarnpkg.com/:_authToken=\${EXPIA_NPM_TOKEN}" > .npmrc
+          - npm config set @fifth:registry https://registry.yarnpkg.com/
+          - yarn install --ignore-engines
+          - yarn prettier
+
+    - step:
+        name: Run Tests
+        caches:
+          - node
+        services:
+          - postgres
+        script:
+          - echo "APP_ENVIRONMENT=local" > .env
+          - echo "DB_PASSWORD=postgres" >> .env
+          - echo "DB_USERNAME=postgres" >> .env
+          - echo "FS_DRIVER=s3" >> .env
+          - echo "//registry.yarnpkg.com/:_authToken=\${EXPIA_NPM_TOKEN}" > .npmrc
+          - npm config set @fifth:registry https://registry.yarnpkg.com/
+          - yarn install --ignore-engines
+          - yarn add sharp --ignore-engines
+          - yarn build
+          - yarn test
+
+  branches:
+    develop:
+      - step:
+          name: Increment Version
+          image: node:20
+          caches:
+            - node
+          script:
+            - git config --global user.email "suren@fifth-llc.com"
+            - git config --global user.name "SurenAvagyanG"
+            - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
+            - echo "//registry.yarnpkg.com/:_authToken=\${EXPIA_NPM_TOKEN}" > .npmrc
+            - npm config set @fifth:registry https://registry.yarnpkg.com/
+            - yarn install --ignore-engines
+            - yarn add sharp --ignore-engines
+            - yarn version --patch --no-git-tag-version
+            - git add package.json
+            - git commit -m "Incremented package version [skip ci]"
+            - git push origin develop
+
 definitions:
-  caches:
-    node_cache: &node_cache
-      - node
-
-  scripts:
-    setup_npmrc: &setup_npmrc
-      - echo "//registry.yarnpkg.com/:_authToken=\${EXPIA_NPM_TOKEN}" > .npmrc
-      - npm config set @fifth:registry https://registry.yarnpkg.com/
-      - yarn install --ignore-engines
-
   services:
     postgres:
       image: postgres
@@ -24,51 +74,3 @@ definitions:
         retries: 5
       ports:
         - '5432:5432'
-
-pipelines:
-  default:
-    - step:
-        name: Run ESLint
-        caches: *node_cache
-        script:
-          - *setup_npmrc
-          - yarn lint
-
-    - step:
-        name: Run Prettier Check
-        caches: *node_cache
-        script:
-          - *setup_npmrc
-          - yarn prettier
-
-    - step:
-        name: Run Tests
-        caches: *node_cache
-        services:
-          - postgres
-        script:
-          - echo "APP_ENVIRONMENT=local" > .env
-          - echo "DB_PASSWORD=postgres" >> .env
-          - echo "DB_USERNAME=postgres" >> .env
-          - echo "FS_DRIVER=s3" >> .env
-          - *setup_npmrc
-          - yarn add sharp --ignore-engines
-          - yarn build
-          - yarn test
-
-  branches:
-    develop:
-      - step:
-          name: Increment Version
-          image: node:20
-          caches: *node_cache
-          script:
-            - git config --global user.email "suren@fifth-llc.com"
-            - git config --global user.name "SurenAvagyanG"
-            - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
-            - *setup_npmrc
-            - yarn add sharp --ignore-engines
-            - yarn version --patch --no-git-tag-version
-            - git add package.json
-            - git commit -m "Incremented package version [skip ci]"
-            - git push origin develop
