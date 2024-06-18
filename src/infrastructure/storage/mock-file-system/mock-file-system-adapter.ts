@@ -38,6 +38,7 @@ export class MockFileSystemAdapter implements IStorage {
     return Promise.resolve({ size: 1 });
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getFileBufferByUrl(url: string): Promise<Buffer> {
     return Promise.resolve(Buffer.from('test'));
   }
