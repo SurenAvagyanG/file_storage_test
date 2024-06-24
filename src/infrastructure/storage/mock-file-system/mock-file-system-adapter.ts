@@ -5,6 +5,7 @@ import {
   UploadUrlResponse,
   UrlParams,
 } from '../storage.interface';
+import { ImageExtensions, VideoExtensions } from '@domain/constants';
 
 export class MockFileSystemAdapter implements IStorage {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -13,9 +14,17 @@ export class MockFileSystemAdapter implements IStorage {
   }
 
   getUploadUrl(extension: string): Promise<UploadUrlResponse> {
-    return Promise.resolve({
-      signedUrl: `http//string.${extension}?signed=1`,
-      staticUrl: `http//string.${extension}`,
+    const validExtensions = [...ImageExtensions, ...VideoExtensions];
+
+    return new Promise((resolve, reject) => {
+      if (!validExtensions.includes(extension)) {
+        reject(new Error('Invalid extension'));
+      } else {
+        resolve({
+          signedUrl: `http//string.${extension}?signed=1`,
+          staticUrl: `http//string.${extension}`,
+        });
+      }
     });
   }
 
