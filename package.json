@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.10.1",
-    "@fifth/expia-common": "^1.0.3",
+    "@fifth/expia-common": "^1.0.5",
     "@nestjs/apollo": "^12.1.0",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/common": "^10.0.0",
