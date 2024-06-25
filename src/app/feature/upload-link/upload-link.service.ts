@@ -5,7 +5,7 @@ import {
   BaseService,
   DBConnection,
   IDBTransactionRunner,
-} from '@infrastructure/common';
+} from '@fifth/expia-common';
 import { UploadLinkConnection } from '@feature/upload-link/constants/tokens.const';
 import { CreateUploadLinkInput } from '@feature/upload-link/dto/create-upload-link.input';
 

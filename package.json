@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@apollo/server": "^4.10.1",
+    "@fifth/expia-common": "^1.0.5",
     "@nestjs/apollo": "^12.1.0",
     "@nestjs/cli": "^10.0.0",
     "@nestjs/common": "^10.0.0",
@@ -35,7 +36,6 @@
     "aws-sdk": "^2.1585.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
-    "dd-trace": "^5.9.0",
     "dotenv": "^16.4.5",
     "graphql": "^16.8.1",
     "mime": "^4.0.1",
@@ -43,9 +43,7 @@
     "reflect-metadata": "^0.2.0",
     "rxjs": "^7.8.1",
     "sharp": "^0.33.4",
-    "typeorm": "^0.3.20",
-    "winston": "^3.13.0",
-    "winston-transport": "^4.7.0"
+    "typeorm": "^0.3.20"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",

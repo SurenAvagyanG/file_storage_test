@@ -2,6 +2,44 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type FileObject {
+  id: String
+  url: String
+  size: Float
+  publicUrl: String
+  type: Float
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type AttachmentObject {
+  id: String!
+  name: String!
+  type: Float
+  extension: String
+  creator_id: String
+  creator_type: String
+  description: String
+  files: [FileObject!]
+  createdAt: DateTime
+  updatedAt: DateTime
+}
+
+type PersonalDetailObject {
+  id: String!
+  mainImageId: String
+  attachment: AttachmentObject
+  firstName: String!
+  lastName: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
 type FileEntity {
   id: String!
   createdAt: DateTime!
@@ -11,11 +49,6 @@ type FileEntity {
   publicUrl: String!
   type: Float!
 }
-
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
 
 type AttachmentEntity {
   id: String!

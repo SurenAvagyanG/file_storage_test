@@ -1,11 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { AttachmentEntity } from '@feature/attachment/entities/attachment.entity';
-import { IDBTransactionRunner } from '@infrastructure/common';
+import { IDBTransactionRunner, generateRandomStr } from '@fifth/expia-common';
 import { StorageService } from '@shared/storage';
 import { FileService } from '@feature/file/file.service';
 import { FileType } from '@domain/constants';
 import { FileEntity } from '@feature/file/entities/file.entity';
-import { generateRandomStr } from '@infrastructure/utils';
 import { ImageResizerService } from '@feature/image-resizer';
 
 @Injectable()

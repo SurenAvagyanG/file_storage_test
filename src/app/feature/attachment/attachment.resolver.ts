@@ -7,7 +7,7 @@ import { Inject } from '@nestjs/common';
 import {
   DBTransactionService,
   IDBTransactionService,
-} from '@infrastructure/common';
+} from '@fifth/expia-common';
 
 @Resolver(() => AttachmentEntity)
 export class AttachmentResolver {

@@ -6,7 +6,7 @@ import { fileSystemConfig } from '@config/file-system.config';
 import { StorageFactory } from '@infrastructure/storage';
 import { MockFileSystemAdapter } from '@infrastructure/storage/mock-file-system/mock-file-system-adapter';
 import { UploadLinkResolver } from '@feature/upload-link/upload-link.resolver';
-import { DatabaseTestingModule } from '@infrastructure/common';
+import { DatabaseTestingModule } from '@fifth/expia-common';
 import { UploadLinkModule } from '@feature/upload-link/upload-link.module';
 
 describe('AttachmentResolver', () => {

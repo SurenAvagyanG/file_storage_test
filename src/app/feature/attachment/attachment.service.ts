@@ -4,7 +4,7 @@ import {
   BaseService,
   DBConnection,
   IDBTransactionRunner,
-} from '@infrastructure/common';
+} from '@fifth/expia-common';
 import { StorageService } from '@shared/storage';
 import { UploadLinkService } from '@feature/upload-link/upload-link.service';
 import { FileService } from '@feature/file/file.service';

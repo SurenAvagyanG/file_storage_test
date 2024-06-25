@@ -7,6 +7,8 @@ pipelines:
         caches:
           - node
         script:
+          - echo "//registry.yarnpkg.com/:_authToken=\${EXPIA_NPM_TOKEN}" > .npmrc
+          - npm config set @fifth:registry https://registry.yarnpkg.com/
           - yarn install --ignore-engines
           - yarn lint
 
@@ -15,6 +17,8 @@ pipelines:
         caches:
           - node
         script:
+          - echo "//registry.yarnpkg.com/:_authToken=\${EXPIA_NPM_TOKEN}" > .npmrc
+          - npm config set @fifth:registry https://registry.yarnpkg.com/
           - yarn install --ignore-engines
           - yarn prettier
 
@@ -29,7 +33,9 @@ pipelines:
           - echo "DB_PASSWORD=postgres" >> .env
           - echo "DB_USERNAME=postgres" >> .env
           - echo "FS_DRIVER=s3" >> .env
-          - yarn install
+          - echo "//registry.yarnpkg.com/:_authToken=\${EXPIA_NPM_TOKEN}" > .npmrc
+          - npm config set @fifth:registry https://registry.yarnpkg.com/
+          - yarn install --ignore-engines
           - yarn add sharp --ignore-engines
           - yarn build
           - yarn test
@@ -45,7 +51,10 @@ pipelines:
             - git config --global user.email "suren@fifth-llc.com"
             - git config --global user.name "SurenAvagyanG"
             - git remote set-url origin https://SurenAvagyanG:${EXPIA_PIPELINE_TOKEN}@bitbucket.org/fifthllc/file_storage.git
-            - yarn install
+            - echo "//registry.yarnpkg.com/:_authToken=\${EXPIA_NPM_TOKEN}" > .npmrc
+            - npm config set @fifth:registry https://registry.yarnpkg.com/
+            - yarn install --ignore-engines
+            - yarn add sharp --ignore-engines
             - yarn version --patch --no-git-tag-version
             - git add package.json
             - git commit -m "Incremented package version [skip ci]"

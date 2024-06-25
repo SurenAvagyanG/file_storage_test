@@ -6,7 +6,7 @@ import { Inject } from '@nestjs/common';
 import {
   DBTransactionService,
   IDBTransactionService,
-} from '@infrastructure/common';
+} from '@fifth/expia-common';
 
 @Resolver(() => UploadLinkEntity)
 export class UploadLinkResolver {
