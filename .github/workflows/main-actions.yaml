@@ -1,76 +1,58 @@
-name: Main Actions
+image: node:20
 
-on:
-  - push
+pipelines:
+  default:
+    - step:
+        name: Run ESLint
+        caches:
+          - yarn
+        script:
+          - yarn install --ignore-engines
+          - yarn lint
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+    - step:
+        name: Run Prettier Check
+        caches:
+          - yarn
+        script:
+          - yarn install --ignore-engines
+          - yarn prettier
 
-jobs:
-  lint:
-    name: Run ESLint
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'yarn'
-      - run: yarn
-      - run: yarn lint
-
-  prettier:
-    name: Run Prettier Check
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'yarn'
-      - run: yarn
-      - run: yarn prettier
-
-  test:
-    name: Run Test
-    timeout-minutes: 30
-    runs-on: ubuntu-latest
-    services:
-      # Label used to access the service container
-      postgres:
-        # Docker Hub image
-        image: postgres
-        # Provide the password for postgres
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: file_storage
-        # Set health checks to wait until postgres has started
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          # Maps tcp port 5432 on service container to the host
-          - 5432:5432
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'yarn'
-      - run: echo "APP_ENVIRONMENT=local" > .env
-      - run: echo "DB_PASSWORD=postgres" > .env
-      - run: echo "DB_USERNAME=postgres" > .env
-      - run: echo "FS_DRIVER=s3" > .env
-      - run: yarn
-      - run: yarn build
-      - run: yarn test
-        env:
+    - step:
+        name: Run Tests
+        services:
+          - postgres
+        caches:
+          - yarn
+        script:
+          - apt-get update && apt-get install -y libvips-dev
+          - echo "APP_ENVIRONMENT=local" > .env
+          - echo "DB_PASSWORD=postgres" >> .env
+          - echo "DB_USERNAME=postgres" >> .env
+          - echo "FS_DRIVER=s3" >> .env
+          - yarn install --ignore-engines
+          - yarn build
+          - yarn test
+        environment:
           APP_ENVIRONMENT: local
           APP_VERSION: 0.0.0.1
           DB_PASSWORD: postgres
           DB_USERNAME: postgres
+
+definitions:
+  services:
+    postgres:
+      image: postgres
+      environment:
+        POSTGRES_PASSWORD: 'postgres'
+        POSTGRES_DB: 'file_storage'
+      options: >-
+        --health-cmd pg_isready
+        --health-interval 10s
+        --health-timeout 5s
+        --health-retries 5
+      ports:
+        - 5432:5432
+
+caches:
+  yarn: ~/.cache/yarn
