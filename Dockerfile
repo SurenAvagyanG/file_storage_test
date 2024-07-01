@@ -7,8 +7,15 @@ FROM $NODE_JS_IMAGE
 # Set the working directory in the container
 WORKDIR /app
 
+# Add npm registry authentication token as build argument
+ARG EXPIA_NPM_TOKEN
+
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
+
+# Set up .npmrc for authentication
+RUN echo "//registry.yarnpkg.com/:_authToken=${EXPIA_NPM_TOKEN}" > .npmrc && \
+    npm config set @fifth:registry https://registry.yarnpkg.com/
 
 # Install dependencies
 RUN yarn install

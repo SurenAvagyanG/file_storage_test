@@ -3,17 +3,22 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+      - aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
   build:
     commands:
       - APP_VERSION=$(node -pe "require('./package.json').version")
       - IMAGE_TAG=${APP_VERSION}-${CODEBUILD_RESOLVED_SOURCE_VERSION:0:7}
-      - docker build -t file_storage . --build-arg NODE_JS_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/node:20-alpine
+      - EXPIA_NPM_TOKEN=$(aws ssm get-parameter --name "NPM_TOKEN" --with-decryption --query "Parameter.Value" --output text)
+      - docker build --build-arg EXPIA_NPM_TOKEN=$EXPIA_NPM_TOKEN --build-arg NODE_JS_IMAGE=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/node:20-alpine -t file_storage .
       - docker tag file_storage:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG
       - docker tag file_storage:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:latest
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:latest
   post_build:
     commands:
-      - aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
-      - kubectl set image deployment/file-storage file-storage=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG
+      - echo "Sending deployment request..."
+      - chmod +x deploy.sh
+      - FIFTH_DEPLOYMENT_PASSWORD=$(aws ssm get-parameter --name "FIFTH_DEPLOYMENT_PASSWORD" --with-decryption --query "Parameter.Value" --output text)
+      - ./deploy.sh "file-storage" "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG" "$FIFTH_DEPLOYMENT_PASSWORD"
+      # - aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
+      # - kubectl set image deployment/file-storage file-storage=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG
