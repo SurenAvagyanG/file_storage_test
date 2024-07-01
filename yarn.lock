@@ -612,10 +612,10 @@
   resolved "https://registry.yarnpkg.com/@faker-js/faker/-/faker-8.4.1.tgz#5d5e8aee8fce48f5e189bf730ebd1f758f491451"
   integrity sha512-XQ3cU+Q8Uqmrbf2e0cIC/QN43sTBSC8KF12u29Mb47tWrt2hAgBXSgpZMj4Ao8Uk0iJcU99QsOCaIL8934obCg==
 
-"@fifth/expia-common@^1.0.11":
-  version "1.0.11"
-  resolved "https://registry.yarnpkg.com/@fifth/expia-common/-/expia-common-1.0.11.tgz#c49dbb64632c49d7c8947920e70ef3537c007516"
-  integrity sha512-g+gmyJdP/2hRZUFodYGHjjX0/Px9bVxTFP6Re3vhPnGQ8e+//irOrNt9vvVzO/ECthaUNlJmTKhK7TZ0RjmBRw==
+"@fifth/expia-common@^1.0.13":
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/@fifth/expia-common/-/expia-common-1.0.13.tgz#be1bf0b54f358aadd88dad625c561f7b0976667f"
+  integrity sha512-2AYuGatWoIYyei819gAtjH+DLYIXNn9fGKBWNAldP0qJSuya9Ydx7cJ8OfYB/TVoqnAaSJdkCDzjkBm9KOHL9A==
   dependencies:
     "@faker-js/faker" "^8.4.1"
     "@nestjs/common" "^10.3.9"
