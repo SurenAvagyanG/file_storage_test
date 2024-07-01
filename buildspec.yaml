@@ -21,4 +21,4 @@ phases:
       - FIFTH_DEPLOYMENT_PASSWORD=$(aws ssm get-parameter --name "FIFTH_DEPLOYMENT_PASSWORD" --with-decryption --query "Parameter.Value" --output text)
       - ./deploy.sh "file-storage" "$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG" "$FIFTH_DEPLOYMENT_PASSWORD"
       # - aws eks update-kubeconfig --name $CLUSTER_NAME --region $AWS_REGION
-      # - kubectl set image deployment/file-service traveler-storage=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG
+      # - kubectl set image deployment/file-storage file-storage=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/file_storage:$IMAGE_TAG
