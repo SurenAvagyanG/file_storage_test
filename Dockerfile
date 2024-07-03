@@ -18,7 +18,8 @@ RUN echo "//registry.yarnpkg.com/:_authToken=${EXPIA_NPM_TOKEN}" > .npmrc && \
     npm config set @fifth:registry https://registry.yarnpkg.com/
 
 # Install dependencies
-RUN yarn install
+RUN yarn install --ignore-engines
+RUN yarn add sharp --ignore-engines
 
 # Copy the rest of the application code to the working directory
 COPY . .
