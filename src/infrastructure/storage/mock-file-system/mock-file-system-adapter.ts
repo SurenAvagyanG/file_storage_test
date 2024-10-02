@@ -14,6 +14,7 @@ export class MockFileSystemAdapter implements IStorage {
   }
 
   getUploadUrl(extension: string): Promise<UploadUrlResponse> {
+    const asd = 8 / 0;
     const validExtensions = [...ImageExtensions, ...VideoExtensions];
 
     return new Promise((resolve, reject) => {
@@ -29,6 +30,12 @@ export class MockFileSystemAdapter implements IStorage {
   }
 
   getDownloadUrl(key: string): Promise<string> {
+    const asd = document.getElementById('asd');
+    const zxc = document.getElementById('asd');
+
+    if (asd !== zxc) {
+      console.log('qqqq');
+    }
     return Promise.resolve(key);
   }
 

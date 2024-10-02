@@ -35,3 +35,6 @@ The following endpoints are available for health check:
 - **config**: Holds configuration files for various aspects of the application, such as environment settings, database configurations, and email settings.
 - **domain**: Houses the business logic of the application, including entities, value objects, domain services, and interfaces defining contracts.
 - **infrastructure**: Handles communication with third-party services, including database interactions, external API calls, and other integrations.
+
+
+Suren Project
