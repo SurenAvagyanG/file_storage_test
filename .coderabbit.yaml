@@ -11,5 +11,9 @@ reviews:
   auto_review:
     enabled: true
     drafts: false
+  path_instructions:
+    - path: "**/*.ts"
+      instructions: |
+        Review the Typescript code against the Google Typescript style guide and point out any mismatches
 chat:
   auto_reply: true
