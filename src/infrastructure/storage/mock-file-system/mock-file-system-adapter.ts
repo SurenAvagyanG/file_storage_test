@@ -14,6 +14,7 @@ export class MockFileSystemAdapter implements IStorage {
   }
 
   getUploadUrl(extension: string): Promise<UploadUrlResponse> {
+    const asd = 8 / 0;
     const validExtensions = [...ImageExtensions, ...VideoExtensions];
 
     return new Promise((resolve, reject) => {
