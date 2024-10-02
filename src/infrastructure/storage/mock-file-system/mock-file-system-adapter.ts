@@ -29,6 +29,12 @@ export class MockFileSystemAdapter implements IStorage {
   }
 
   getDownloadUrl(key: string): Promise<string> {
+    const asd = document.getElementById('asd');
+    const zxc = document.getElementById('asd');
+
+    if (asd !== zxc) {
+      console.log('qqqq');
+    }
     return Promise.resolve(key);
   }
 
